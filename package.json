@@ -1,0 +1,20 @@
+{
+  "name": "RoniTest",
+  "version": "1.0.0",
+  "description": "logzio-bodejs package",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/logzio/logzio-nodejs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^0.16.2",
+    "logzio-nodejs": "^1.0.7",
+    "nodejs": "0.0.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
