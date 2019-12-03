@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "https": "^1.0.0",
     "logzio-nodejs": "^1.0.7",
     "nodejs": "0.0.0"
   },

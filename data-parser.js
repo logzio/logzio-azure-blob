@@ -47,14 +47,27 @@ class DataParser {
    
   _pushMessage(msg) {
     if (isArray(msg.records)) {
+      context.log("in push msg: " + msg.records);
       msg.records.forEach(subMsg => this._parsedMessages.push(this._renameKeyRemoveEmpty(subMsg)));
     } else {
       this._parsedMessages.push(this._renameKeyRemoveEmpty(msg));
     }
   }
 
-  toJson(ndjson, context) {
+  _removeLastNewline(ndjson){
+    try{
+        if (ndjson.charAt(ndjson.length-1)=== '\n'){
+            ndjson = ndjson.slice(0, -1);
+        }
+    }
+    catch(e){  
+    }
+    return ndjson;
+  }
+
+   parseJsonToLogs(ndjson, context) {
     var splittedJson, jsonArray = [];
+    ndjson = this._removeLastNewline(ndjson);
     try{
       splittedJson = ndjson.split('\n').join(',');
       jsonArray = JSON.parse(`[${splittedJson}]`);
@@ -65,23 +78,11 @@ class DataParser {
           jsonArray[0] = ndjson;
       }
       if (e instanceof SyntaxError){
-        // throw new Error("Your data is invalid, Please ensure new lines seperates logs only.");
-        context.log("data with new lines, parsing anyway...");
+        throw new Error("Your data is invalid, Please ensure new lines seperates logs only.");
       }
     }
     return jsonArray;
   }
-
-  parseJsonToLogs(message, context) {
-    var arr;
-    try{
-      arr = this.toJson(message);
-    }
-    catch(e){
-      context.log(e);
-    }
-    return arr;
-  } 
 
   parseCSVtoLogs(message, context) {
     context.log("message: " + message);
@@ -108,13 +109,14 @@ class DataParser {
     this._parsing = true;
     if (logType.toLowerCase() === 'csv') {
       context.log("in csv");
-      logsArray = this.parseJsonToLogs(eventHubMessage, context);
+      logsArray = this.parseCSVtoLogs(eventHubMessage, context);
     }
     if (logType.toLowerCase() === 'json') {
-        logsArray = this.parseJsonToLogs(eventHubMessage, context);
-        context.log(logsArray);
+      logsArray = this.parseJsonToLogs(eventHubMessage, context);
+      context.log("logs array:" + logsArray);
     }
     if (isArray(logsArray)) {
+      context.log("is array");
       logsArray.forEach(msg => this._pushMessage(msg));
     } else {
       this._pushMessage(logsArray);
