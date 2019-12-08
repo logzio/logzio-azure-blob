@@ -104,12 +104,18 @@ class DataParser {
 
   parseEventHubLogMessagesToArray(eventHubMessage, logType, context) {
     context.log("message in:" + eventHubMessage);
+    context.log("type:" + logType);
     var logsArray = [];
     if (this._parsing === true) throw Error('already parsing, create a new DataParser');
     this._parsing = true;
     if (logType.toLowerCase() === 'csv') {
       context.log("in csv");
+      try{
       logsArray = this.parseCSVtoLogs(eventHubMessage, context);
+      }
+      catch(e){
+        context.log("in csv error:"+e);
+      }
     }
     if (logType.toLowerCase() === 'json') {
       logsArray = this.parseJsonToLogs(eventHubMessage, context);
