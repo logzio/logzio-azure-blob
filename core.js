@@ -1,110 +1,91 @@
-const logger = require('logzio-nodejs');
-const DataParser = require('./data-parser');
-const axios = require('axios');
-const zlib = require('zlib');
-const https = require('https');
-
+const logger = require("logzio-nodejs");
+const DataParser = require("./data-parser");
+const zlib = require("zlib");
+const request= require('request');
+const context = {
+  log: () => {},
+  done: () => {},
+  err: () => {}
+};
 
 function getCallBackFunction(context) {
-  return function callback(err) {
+  return function callback(err, bulk) {
     if (err) {
       context.err(`logzio-logger error: ${err}`, err);
+      context.bindings.outputBlob = bulk;
     }
-
     context.done();
   };
 }
 
 const getParserOptions = () => ({
-  logs: {
-    token: process.env.LogzioLogsToken,
-    host: process.env.LogzioLogsHost,
-  },
+    token: process.env.LogzioToken,
+    host: process.env.LogzioHost
 });
 
-function getGzipped(url, callback) {
-  var buffer = [];
-
-  https.get(url, function(res) {
-      var gunzip = zlib.createGunzip();            
-      res.pipe(gunzip);
-      gunzip.on('data', function(data) {
-          buffer.push(data.toString())
-
-      }).on("end", function() {
-          callback(null, buffer.join("")); 
-
-      }).on("error", function(e) {
-          callback(e);
-      })
-  }).on('error', function(e) {
-      callback(e)
-  });
-}
-
-function sendData(data, logType, context){
+function sendData(data, logType, context) {
+  context.log(`this is the data: ${data}`);
+  const callBackFunction = getCallBackFunction(context);
   const dataParser = new DataParser({
     internalLogger: context
   });
-  const parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(data, logType, context);
-  const callBackFunction = getCallBackFunction(context);
+  const { host,  token  } = getParserOptions();
+  const parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(
+    data,
+    logType,
+    context
+  );
+
   const logzioShipper = logger.createLogger({
-    token: 'VRumDxNPhJyNAHmAZXnqJKPqDuGJVesn',
-    host: 'listener.logz.io',
-    type: 'eventHub',
-    protocol: 'https', 
+    token: token,
+    host: host,
+    type: "eventHub",
+    protocol: "https",
     internalLogger: context,
     compress: true,
     debug: true,
-    callback: callBackFunction,
+    callback: callBackFunction
   });
-
   context.log(`About to send ${parseMessagesArray.length} logs...`);
-  parseMessagesArray.forEach((log) => {
-    context.log(JSON.stringify(`logging: ${log}`));
+  parseMessagesArray.forEach(log => {
     logzioShipper.log(log);
   });
-  logzioShipper.sendAndClose(callBackFunction);    
-} 
+  logzioShipper.sendAndClose(callBackFunction);
+}
 
-module.exports = function processEventHubMessages(context, eventHubMessages) {
-  // const {
-  //   host,
-  //   token,
-  // } = getParserOptions().logs;
-  context.log(`Starting Logz.io Azure function with logs`);
-  context.log(eventHubMessages);
-  eventHubMessages.forEach(eventHubMessage => {
-  const url = eventHubMessage[0]['data']['url'];
-  const urlArray = url.split(".");
-  var logType = urlArray.pop();
-  const compressed = logType === 'gz';
-  if (compressed){
-    logType = urlArray[urlArray.length-1];
+function getData(url, compressed, callback) {
+  request(url, {encoding: null}, function(err, response, body){
+    if(compressed){
+        zlib.gunzip(body, function(err, dezipped) {
+          callback(dezipped.toString());
+        });
+    } else {
+        callback(body.toString());
+    }
+  });
+}
+
+function handleEventHub(message) {
+  const url = message[0]["subject"];
+  const splitUrl = message[0]["subject"].split(".");
+  var logType = splitUrl.pop();
+  const compressed = logType === "gz";
+  if (compressed) {
+    logType = splitUrl[splitUrl.length - 1];
   }
-  context.log(logType);
+  getData(url, compressed, function(data) {
+    sendData(data, logType, context);
+   });
+}
 
-    axios.get(url).then(response => {
-        const data = response.data;
-        const headers = response.headers;
-        try{
-        if (compressed){
-          getGzipped(url, function(err, data) {
-            context.log("passed gunzip" + data);
-             sendData(data, logType, context);
-          });
-        }
-        else{
-            context.log("not gzip" + data);
-            sendData(data, logType, context);
-        }
-      }
-      catch(e){
-        context.log(e);
-      }
-    })
-    .catch(error => {
-      context.log(error);
-    });
-  })
-};
+function processEventHubMessages(context, eventHubMessages) {
+  context.log(`Starting Logz.io Azure function with logs`);
+  eventHubMessages.forEach(eventHubMessage => {
+    handleEventHub(eventHubMessage);
+  });
+}
+
+module.exports = {
+    processEventHubMessages : processEventHubMessages,
+    sendData : sendData
+}

@@ -8,6 +8,13 @@
       "connection": "eventHubGridNew_Roni_EVENTHUB",
       "cardinality": "many",
       "consumerGroup": "$Default"
+    },
+    {
+      "type": "eventHub",
+      "name": "outputEventHubMessage",
+      "connection": "eventHubGridNew_Roni_EVENTHUB",
+      "eventHubName": "outeventhub",
+      "direction": "out"
     }
   ],
   "disabled": false
