@@ -24,70 +24,60 @@ class DataParser {
     this._parsedMessages = [];
     this._parsing = false;
     this._internalLogger = internalLogger;
-    this._availableStatistics = [
-      "count",
-      "total",
-      "average",
-      "maximum",
-      "minimum"
-    ];
   }
 
-  _removeEmpty(obj) {
-    if (typeof obj === "string") return obj; // for string event.
-
-    const cleanObj = Object.keys(obj)
-      .filter(k => isAllEmpty(k, obj[k]))
+  _removeEmpty(message) {
+    if (typeof message === "string") return message; // for string event.
+    const cleanObj = Object.keys(message)
+      .filter(k => isAllEmpty(k, message[k]))
       .reduce(
         (acc, k) =>
-          Object.assign(acc, {
-            [k]: typeof obj[k] === "object" ? this._removeEmpty(obj[k]) : obj[k]
+        Object.assign(acc, {  
+            [k]: typeof message[k] === "object" ? this._removeEmpty(message[k]) : message[k]
           }),
         {}
       );
-
     // In case of object that all of its values are empty
     Object.keys(cleanObj).forEach(key => {
-      if (!isAllEmpty(key, cleanObj[key])) delete cleanObj[key];
+      if (!isAllEmpty(key, cleanObj[key])){ delete cleanObj[key];
+      }
     });
-
     return cleanObj;
   }
 
-  _renameKeyRemoveEmpty(obj) {
-    renameLogKey(obj);
-    return this._removeEmpty(obj);
+  _renameKeyRemoveEmpty(message) {
+    renameLogKey(message);
+    return this._removeEmpty(message);
   }
 
-  _pushMessage(msg) {
-    if (isArray(msg.records)) {
-      msg.records.forEach(subMsg =>
-        this._parsedMessages.push(this._renameKeyRemoveEmpty(subMsg))
+  _pushMessage(message) {
+    if (isArray(message.records)) {
+      message.records.forEach(subMessage =>
+        this._parsedMessages.push(this._renameKeyRemoveEmpty(subMessage))
       );
     } else {
-      this._parsedMessages.push(this._renameKeyRemoveEmpty(msg));
+      this._parsedMessages.push(this._renameKeyRemoveEmpty(message));
     }
   }
 
-  _removeLastNewline(ndjson) {
+  _removeLastNewline(message) {
     try {
-      if (ndjson.charAt(ndjson.length - 1) === "\n") {
-        ndjson = ndjson.slice(0, -1);
+      if (message.charAt(message.length - 1) === "\n") {
+        message = message.slice(0, -1);
       }
     } catch (e) {}
-    return ndjson;
+    return message;
   }
 
-  parseJsonToLogs(ndjson) {
-    var splittedJson,
-      jsonArray = [];
-    ndjson = this._removeLastNewline(ndjson);
+  _parseJsonToLogs(message) {
+    var jsonArray = [];
+    message = this._removeLastNewline(message);
     try {
-      splittedJson = ndjson.split("\n").join(",");
+      var splittedJson = message.split("\n").join(",");
       jsonArray = JSON.parse(`[${splittedJson}]`);
     } catch (e) {
       if (e instanceof TypeError) {
-        jsonArray[0] = ndjson;
+        jsonArray[0] = message;
       }
       if (e instanceof SyntaxError) {
         throw new Error(
@@ -98,7 +88,7 @@ class DataParser {
     return jsonArray;
   }
 
-  parseCSVtoLogs(message) {
+  _parseCSVtoLogs(message) {
     var lines = message.split("\n");
     var result = [];
     var headers = lines[0].split(",");
@@ -113,23 +103,23 @@ class DataParser {
     return result;
   }
 
-  parseEventHubLogMessagesToArray(eventHubMessage, logType) {
+  _parseEventHubLogMessagesToArray(eventHubMessage, logType) {
     var logsArray = [];
     if (this._parsing === true)
       throw Error("already parsing, create a new DataParser");
     this._parsing = true;
     switch (logType.toLowerCase()) {
       case "csv":
-        logsArray = this.parseCSVtoLogs(eventHubMessage);
+        logsArray = this._parseCSVtoLogs(eventHubMessage);
         break;
       case "json":
-        logsArray = this.parseJsonToLogs(eventHubMessage);
+        logsArray = this._parseJsonToLogs(eventHubMessage);
         break;
       default:
         logsArray = eventHubMessage;
     }
     if (isArray(logsArray)) {
-      logsArray.forEach(msg => this._pushMessage(msg));
+      logsArray.forEach(message => this._pushMessage(message));
     } else {
       this._pushMessage(logsArray);
     }

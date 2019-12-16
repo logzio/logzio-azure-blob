@@ -19,18 +19,17 @@ function getCallBackFunction(context) {
 }
 
 const getParserOptions = () => ({
-    token: process.env.LogzioToken,
-    host: process.env.LogzioHost
+  token: process.env.LogzioToken,
+  host: process.env.LogzioHost
 });
 
 function sendData(data, logType, context) {
-  context.log(`this is the data: ${data}`);
   const callBackFunction = getCallBackFunction(context);
   const dataParser = new DataParser({
     internalLogger: context
   });
-  const { host,  token  } = getParserOptions();
-  const parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(
+  const { host, token } = getParserOptions();
+  const parseMessagesArray = dataParser._parseEventHubLogMessagesToArray(
     data,
     logType,
     context
@@ -54,13 +53,13 @@ function sendData(data, logType, context) {
 }
 
 function getData(url, compressed, callback) {
-  request(url, {encoding: null}, function(err, response, body){
-    if(compressed){
-        zlib.gunzip(body, function(err, dezipped) {
-          callback(dezipped.toString());
-        });
+  request(url, { encoding: null }, function(err, response, body) {
+    if (compressed) {
+      zlib.gunzip(body, function(err, dezipped) {
+        callback(dezipped.toString());
+      });
     } else {
-        callback(body.toString());
+      callback(body.toString());
     }
   });
 }
@@ -75,7 +74,7 @@ function handleEventHub(message) {
   }
   getData(url, compressed, function(data) {
     sendData(data, logType, context);
-   });
+  });
 }
 
 function processEventHubMessages(context, eventHubMessages) {
@@ -86,6 +85,6 @@ function processEventHubMessages(context, eventHubMessages) {
 }
 
 module.exports = {
-    processEventHubMessages : processEventHubMessages,
-    sendData : sendData
-}
+  processEventHubMessages: processEventHubMessages,
+  sendData: sendData
+};
