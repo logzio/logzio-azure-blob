@@ -2,11 +2,7 @@ const logger = require("logzio-nodejs");
 const DataParser = require("./data-parser");
 const zlib = require("zlib");
 const request= require('request');
-const context = {
-  log: () => {},
-  done: () => {},
-  err: () => {}
-};
+const gzip = "gz";
 
 function getCallBackFunction(context) {
   return function callback(err, bulk) {
@@ -29,12 +25,11 @@ function sendData(data, logType, context) {
     internalLogger: context
   });
   const { host, token } = getParserOptions();
-  const parseMessagesArray = dataParser._parseEventHubLogMessagesToArray(
+  const parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(
     data,
     logType,
     context
   );
-
   const logzioShipper = logger.createLogger({
     token: token,
     host: host,
@@ -64,23 +59,24 @@ function getData(url, compressed, callback) {
   });
 }
 
-function handleEventHub(message) {
+function parseMessage(message) {
   const url = message[0]["subject"];
   const splitUrl = message[0]["subject"].split(".");
-  var logType = splitUrl.pop();
-  const compressed = logType === "gz";
-  if (compressed) {
-    logType = splitUrl[splitUrl.length - 1];
+  var fileExtension = splitUrl.pop();
+  const isCompressed = fileExtension === gzip;
+  if (isCompressed) {
+    fileExtension = splitUrl[splitUrl.length - 1];
   }
-  getData(url, compressed, function(data) {
-    sendData(data, logType, context);
-  });
+  return { url, logType: fileExtension , isCompressed};
 }
 
 function processEventHubMessages(context, eventHubMessages) {
   context.log(`Starting Logz.io Azure function with logs`);
-  eventHubMessages.forEach(eventHubMessage => {
-    handleEventHub(eventHubMessage);
+  eventHubMessages.forEach(message => {
+    const { url, logType , isCompressed  } = parseMessage(message);
+    getData(url, isCompressed, function(data) {
+      sendData(data, logType, context);
+    });
   });
 }
 

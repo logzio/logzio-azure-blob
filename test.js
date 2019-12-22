@@ -3,11 +3,11 @@ const logsBuilder = require("./log-builder-test");
 const logHandler = require("./core");
 const nock = require("nock");
 const dummyHost = "listener.logz.io";
-const nockHttpAddress = `https://${dummyHost}:8071`;
-const dummyToken = "123456789";
+const nockHttpAddress = `https://listener.logz.io:8071`;
+const dummyToken = 'VRumDxNPhJyNAHmAZXnqJKPqDuGJVesn';
 const context = {
   log: () => {},
-  done: () => {},
+  done: () =>{},
   err: () => {}
 };
 const validItem = {
@@ -26,7 +26,6 @@ const parseMessageTest = () => {
       }).time;
     }
     jsonArray[index] = dataParser._removeEmpty(log);
-    console.log(jsonArray[index]);
   });
   return jsonArray;
 };
@@ -36,17 +35,16 @@ const multiJson = logsBuilder.multiJson;
 const validCSV = logsBuilder.validCSV;
 var parseMessagesArray;
 
-describe("Azure eventHub functions - unittest", () => {
+describe("Azure Blob Storage functions - unittest", () => {
   it("Simple string logs", () => {
     const dataParser = new DataParser(context);
-    parseMessagesArray = dataParser._parseEventHubLogMessagesToArray(stringLog, "text");
-    expect(parseMessagesArray.length).toBe(1);
+    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(stringLog, "text");
     expect(parseMessagesArray[0]).toBe(stringLog);
   });
 
   it("Json logs", () => {
     const dataParser = new DataParser(context);
-    parseMessagesArray = dataParser._parseEventHubLogMessagesToArray(validJson, "json");
+    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(validJson, "json");
     expect(parseMessagesArray.length).toBe(1);
     expect(JSON.stringify(parseMessagesArray[0])).toBe(
       JSON.stringify(validJson)
@@ -55,7 +53,7 @@ describe("Azure eventHub functions - unittest", () => {
 
   it("Multiple Json logs", () => {
     const dataParser = new DataParser(context);
-    parseMessagesArray = dataParser._parseEventHubLogMessagesToArray(multiJson, "json");
+    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(multiJson, "json");
     var jsonParsedValid = parseMessageTest();
     expect(parseMessagesArray.length).toBe(jsonParsedValid.length);
     expect(JSON.stringify(parseMessagesArray)).toBe(
@@ -66,7 +64,7 @@ describe("Azure eventHub functions - unittest", () => {
   it("CSV logs", () => {
     const dataParser = new DataParser(context);
     fileLength = validCSV.split("\n").length - 1;
-    parseMessagesArray = dataParser._parseEventHubLogMessagesToArray(validCSV, "csv");
+    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(validCSV, "csv");
     expect(parseMessagesArray.length).toBe(fileLength);
     expect(JSON.stringify(parseMessagesArray[fileLength - 1])).toBe(
       JSON.stringify(validItem)
@@ -79,7 +77,7 @@ describe("Azure eventHub functions - unittest", () => {
       process.env.LogzioHost = dummyHost;
     });
 
-    it("logzioLogsFunction", done => {
+    it("logzio Host is called", done => {
       nock(nockHttpAddress)
         .post("/")
         .query({
@@ -88,7 +86,18 @@ describe("Azure eventHub functions - unittest", () => {
         .reply(200, () => {
           done();
         });
-      logHandler.sendData(stringLog, "text", context);
+        logHandler.sendData(stringLog, "text", context);
+    });
+
+    it("logzio Host is called", done => {
+      nock(nockHttpAddress)
+        .post("/")
+        .query({
+          token: dummyToken
+        })
+        .reply(200, () => {});
+
+        logHandler.sendData(stringLog, "text", { ...context, done });
     });
   });
 });
