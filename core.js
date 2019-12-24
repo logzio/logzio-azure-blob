@@ -1,8 +1,9 @@
 const logger = require("logzio-nodejs");
 const DataParser = require("./data-parser");
 const zlib = require("zlib");
-const request= require('request');
+const request = require("request");
 const gzip = "gz";
+const event = 0;
 
 function getCallBackFunction(context) {
   return function callback(err, bulk) {
@@ -27,13 +28,12 @@ function sendData(data, logType, context) {
   const { host, token } = getParserOptions();
   const parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(
     data,
-    logType,
-    context
+    logType
   );
   const logzioShipper = logger.createLogger({
     token: token,
     host: host,
-    type: "eventHub",
+    type: "blobStorage",
     protocol: "https",
     internalLogger: context,
     compress: true,
@@ -60,8 +60,8 @@ function getData(url, compressed, callback) {
 }
 
 function parseMessage(message) {
-  const url = message[0]["subject"];
-  const splitUrl = message[0]["subject"].split(".");
+  const url = message[event]["subject"];
+  const splitUrl = url.split(".");
   var fileExtension = splitUrl.pop();
   const isCompressed = fileExtension === gzip;
   if (isCompressed) {

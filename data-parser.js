@@ -18,38 +18,38 @@ class DataParser {
     this._internalLogger = internalLogger;
   }
 
-  parseEventHubLogMessagesToArray(eventHubMessage, logType) {
+  parseEventHubLogMessagesToArray(data, logType) {
     var logsArray = [];
     if (this._parsing === true)
       throw Error("already parsing, create a new DataParser");
     this._parsing = true;
     switch (logType.toLowerCase()) {
       case LogTypes.csv:
-        logsArray = this._parseCSVtoLogs(eventHubMessage);
+        logsArray = this._parseCSVtoLogs(data);
         break;
       case LogTypes.json:
-        logsArray = this._parseJsonToLogs(eventHubMessage);
+        logsArray = this._parseJsonToLogs(data);
         break;
       default:
-        logsArray = eventHubMessage;
+        logsArray = data;
     }
     var parsedMessages = [];
     if (logsArray instanceof Array) {
-      logsArray.forEach(message => parsedMessages.push(this._normalizeMessage(message)));
+      logsArray.forEach(message => parsedMessages.push(this._normalizeData(message)));
     } else {
-      parsedMessages.push(this._normalizeMessage(logsArray));
+      parsedMessages.push(this._normalizeData(logsArray));
     }
     return parsedMessages;
   }
 
-  _removeEmpty(message) {
-    if (typeof message === "string") return message;
-    const cleanObj = Object.keys(message)
-      .filter(k => emptyKeyValue(k, message[k]))
+  _removeEmpty(data) {
+    if (typeof data === "string") return data;
+    const cleanObj = Object.keys(data)
+      .filter(k => emptyKeyValue(k, data[k]))
       .reduce(
         (acc, k) =>
         Object.assign(acc, {  
-            [k]: typeof message[k] === "object" ? this._removeEmpty(message[k]) : message[k]
+            [k]: typeof data[k] === "object" ? this._removeEmpty(data[k]) : data[k]
           }),
         {}
       );
@@ -61,27 +61,27 @@ class DataParser {
     return cleanObj;
   }
 
-  _normalizeMessage(message) {
-    if (message.time) {
-      delete Object.assign(message, {
-        "@timestamp": message.time
+  _normalizeData(data) {
+    if (data.time) {
+      delete Object.assign(data, {
+        "@timestamp": data.time
       }).time;
     }
-    return this._removeEmpty(message);
+    return this._removeEmpty(data);
   }
 
-  _removeLastNewline(message) {
+  _removeLastNewline(data) {
     try {
-      if (message.charAt(message.length - 1) === "\n") {
-        return message.slice(0, -1);
+      if (data.charAt(data.length - 1) === "\n") {
+        return data.slice(0, -1);
       }
     } catch (e) {}
-    return message;
+    return data;
   }
 
-  _parseJsonToLogs(message) {
+  _parseJsonToLogs(data) {
     var jsonArray = [];
-    var validMessage = this._removeLastNewline(message);
+    var validMessage = this._removeLastNewline(data);
     try {
       var splittedJson = validMessage.split("\n").join(",");
       return JSON.parse(`[${splittedJson}]`);
@@ -91,15 +91,15 @@ class DataParser {
       }
       if (e instanceof SyntaxError) {
         throw new Error(
-          "Your data is invalid, Please ensure new lines seperates logs only."
+          "Your data is invalid, please ensure new lines seperates logs only."
         );
       }
     }
     return jsonArray;
   }
 
-  _parseCSVtoLogs(message) {
-    var lines = message.split("\n");
+  _parseCSVtoLogs(data) {
+    var lines = data.split("\n");
     var result = [];
     var headers = lines[0].split(",");
     for (var i = 1; i < lines.length; i++) {
