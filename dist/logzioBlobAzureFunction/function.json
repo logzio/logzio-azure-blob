@@ -5,16 +5,10 @@
       "name": "eventHubMessages",
       "direction": "in",
       "eventHubName": "eventhubblobnew",
-      "connection": "eventHubGridNew_Roni_EVENTHUB",
+      "path": "EventHubBlobName",
+      "connection": "EventHubBlobName",
       "cardinality": "many",
       "consumerGroup": "$Default"
-    },
-    {
-      "type": "eventHub",
-      "name": "outputEventHubMessage",
-      "connection": "eventHubGridNew_Roni_EVENTHUB",
-      "eventHubName": "outeventhub",
-      "direction": "out"
     }
   ],
   "disabled": false
