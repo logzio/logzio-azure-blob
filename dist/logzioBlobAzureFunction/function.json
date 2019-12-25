@@ -4,9 +4,8 @@
       "type": "eventHubTrigger",
       "name": "eventHubMessages",
       "direction": "in",
-      "eventHubName": "eventhubblobnew",
       "path": "EventHubBlobName",
-      "connection": "EventHubBlobName",
+      "connection": "AzureEventHubLogsConnectionString",
       "cardinality": "many",
       "consumerGroup": "$Default"
     }
