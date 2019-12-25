@@ -1,0 +1,14 @@
+{
+  "bindings": [
+    {
+      "type": "eventHubTrigger",
+      "name": "eventHubMessages",
+      "direction": "in",
+      "path": "EventHubBlobName",
+      "connection": "AzureEventHubLogsConnectionString",
+      "cardinality": "many",
+      "consumerGroup": "$Default"
+    }
+  ],
+  "disabled": false
+}
