@@ -59,23 +59,19 @@ function getData(url, compressed, callback) {
   });
 }
 
-function parseMessage(message) {
-  const url = message[event]["subject"];
-  const splitUrl = url.split(".");
-  var fileExtension = splitUrl.pop();
-  const isCompressed = fileExtension === gzip;
-  if (isCompressed) {
-    fileExtension = splitUrl[splitUrl.length - 1];
-  }
-  return { url, logType: fileExtension , isCompressed};
-}
-
 function processEventHubMessages(context, eventHubMessages) {
   context.log(`Starting Logz.io Azure function with logs`);
   eventHubMessages.forEach(message => {
-    const { url, logType , isCompressed  } = parseMessage(message);
+    const url = message[event]["data"]["url"];
+    context.log("url isss:"+url);
+    const splitUrl = url.split(".");
+    var fileExtension = splitUrl.pop();
+    const isCompressed = fileExtension === gzip;
+    if (isCompressed) {
+      fileExtension = splitUrl[splitUrl.length - 1];
+    }
     getData(url, isCompressed, function(data) {
-      sendData(data, logType, context);
+      sendData(data, fileExtension, context);
     });
   });
 }
