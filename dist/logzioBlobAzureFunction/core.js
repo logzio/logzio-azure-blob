@@ -63,7 +63,6 @@ function processEventHubMessages(context, eventHubMessages) {
   context.log(`Starting Logz.io Azure function with logs`);
   eventHubMessages.forEach(message => {
     const url = message[event]["data"]["url"];
-    context.log("url isss:"+url);
     const splitUrl = url.split(".");
     var fileExtension = splitUrl.pop();
     const isCompressed = fileExtension === gzip;
