@@ -39,7 +39,7 @@
             "type": "String"
         },
         "Branch": {
-            "defaultValue": "develop",
+            "defaultValue": "master",
             "type": "String"
         },
         "LogzioConsumerGroups": {
