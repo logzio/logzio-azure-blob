@@ -55,7 +55,6 @@
             "type": "String"
         },
         "LogzioToken": {
-            "defaultValue": "Your Logzio logs account token",
             "type": "String"
         },
         "AuthorizationRulesLogzioSharedAccessKey": {
