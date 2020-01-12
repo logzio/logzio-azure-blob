@@ -1,9 +1,10 @@
 # logzio-azure-blob
-This repo contains the code and instructions you'll need to ship logs from your Azure Blob Storgae to Logz.io.
-At the end of this process, your Azure function will forward logs from an Azure Event Hub to your Logz.io account.
+This repo contains the code and instructions you'll need to ship logs from your Azure Blob Storage to Logz.io.
+At the end of this process, your Azure function will forward logs from an Azure Blob Stroage Account to your Logz.io account.
 
 ## Setting log shipping from Azure
 Option one: Build a new blob storage account and set your log shipping.
+
 Option two: Set your log shipping for an exiting blob storage.
 
 # Option one:
@@ -14,7 +15,7 @@ Option two: Set your log shipping for an exiting blob storage.
 
  Deploy your logs from an existing blob storage👇
 
- [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Flogzio%2Flogzio-azure-blob%2Fdeployments%2Fdevelop%2FdeploymentTemplateForNewStorage.json)
+ [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Flogzio%2Flogzio-azure-blob%2Fdevelop%2Fdeployments%2FdeploymentTemplateForNewStorage.json)
 
 ### 2. Configure the template
 
@@ -72,7 +73,7 @@ To find out your storage account's kind go to your Storage account/overview.
 
  Deploy your logs from an existing blob storage👇
 
- [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Flogzio%2Flogzio-azure-blob%2Fdeployments%2Fdevelop%2FdeploymentTemplate.json)
+ [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Flogzio%2Flogzio-azure-blob%2Fdevelop%2Fdeployments%2FdeploymentTemplate.json)
 
 ### 2. Configure the template
 
@@ -105,16 +106,16 @@ On your storage account:
 
 ### 4. Build an event subscription
 On your storage account:
-1. Go to "Events".
+1. Go to 'Events'. (If you do not have an 'Events' tab, your storage account is not of kind 'StorageV2', please deploy with option one). //link to option one
 2. Add a new event subscription:
     * Name: choose a uniqe name.
     * Event Schema: Event Grid Schema.
-    * Event types/filter to event types: mark only 'Blob Created' (Unmark the rest).
+    * Event types/Filter to event types: Mark only 'Blob Created' (Unmark the rest).
     * Endpoint type: 
         * Choose eventhub.
         * Press 'Select an endpoint'
-        * Update to your new Resource group.
-        * Press 'Confirm seletion'.
+        * Resource Group: put your new resource group.
+        * Press 'Confirm Seletion'.
     * Press 'Create'. 
 
 ### 5. _(Optional)_ Add failsafes for shipping timeouts
