@@ -5,7 +5,7 @@ At the end of this process, your Azure function will forward logs from an Azure 
 ## Setting log shipping from Azure
 Option one: Build a new blob storage account and set your log shipping.
 
-Option two: Set your log shipping for an exiting blob storage.
+Option two: Set your log shipping for an existing blob storage.
 
 # Option one:
 
@@ -45,7 +45,7 @@ Upload blobs to your storage account and watch them in Kibana.
 
 # Option two:
 
-## Set your log shipping for an exiting blob storage
+## Set your log shipping for an existing blob storage
 
 *** This option is for storage account of kind "StorageV2" only.
  To find out your storage account's kind go to your Storage account/overview. ***
