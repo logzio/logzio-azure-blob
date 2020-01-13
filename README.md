@@ -36,7 +36,8 @@ At the bottom of the page, select **I agree to the terms and conditions stated a
 
 Deployment can take a few minutes.
 
-### 3. [Add backup storage account](LINK TO Optional part) for shipping timeouts
+### 3. _(Optional)_ Backup storage account for shipping timeouts
+Add [backup storage account](#optional-add-backup-storage-account-for-shipping-timeouts) for shipping timeouts
 
 ### 4. Check Logz.io for your logs
 
@@ -101,13 +102,16 @@ On your storage account:
 
 ![Account kind](images/create-event-subscription.png)
 
-### 5. [Add backup storage account](LINK TO Optional part) for shipping timeouts
+### 5. _(Optional)_ Backup storage account for shipping timeouts
+Add [backup storage account](#optional-add-backup-storage-account-for-shipping-timeouts) for shipping timeouts
 
 ### 6. Check Logz.io for your logs
 
 Upload blobs to your storage account and watch them in Kibana.
 
 # _(Optional)_ Add backup storage account for shipping timeouts
+
+optional-add-backup-storage-account-for-shipping-timeouts
 
 You can configure logzio-azure-serverless to back up your blobs to Azure Blob Storage,
 so if the connection to Logz.io times out or an error occurs, you'll still have a backup of any dropped data that didn't get shipped.
