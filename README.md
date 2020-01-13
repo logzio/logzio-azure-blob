@@ -50,7 +50,7 @@ Upload blobs to your storage account and watch them in Kibana.
 *** This option is for storage account of kind "StorageV2" only.
  To find out your storage account's kind go to your Storage account/overview. ***
 
-![Account kind](images/Storage-account-settings.png)
+![Account kind](images/storage-account-settings.png)
 
 
 ### 1. Deploy the Logz.io template
@@ -88,7 +88,10 @@ On your storage account:
 
 ### 4. Build an event subscription
 On your storage account:
-1. Go to 'Events'. (If you do not have an 'Events' tab, your storage account is not of kind 'StorageV2', please deploy with option one). //link to option one
+1. Go to **Events**. 
+
+    (If you do not have an 'Events' tab, your storage account is not of kind 'StorageV2', please deploy with [option one](#option-one)). 
+
 2. Add a new event subscription:
     * Name: **choose a uniqe name**.
     * Event Schema: **Event Grid Schema**.
