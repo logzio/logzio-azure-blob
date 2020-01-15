@@ -207,11 +207,12 @@
                 "name": "Standard_RAGRS",
                 "tier": "Standard"
             },
-            "kind": "Storage",
+            "kind": "BlobStorage",
             "name": "[parameters('storageAccountsLogzioFailSafe')]",
             "apiVersion": "2019-04-01",
             "location": "[resourceGroup().location]",
             "properties": {
+                "accessTier": "Hot",
                 "encryption": {
                     "services": {
                         "file": {
@@ -381,6 +382,5 @@
                 "publicAccess": "Blob"
             }
         }
-        
     ]
 }

@@ -3,9 +3,9 @@ This repo contains the code and instructions you'll need to ship logs from your 
 At the end of this process, your Azure function will forward logs from an Azure Blob Stroage Account to your Logz.io account.
 
 ## Setting log shipping from Azure
-Option one: Build a new blob storage account and set your log shipping.
+Option one: [Build a new blob storage account and set your log shipping](#option-one).
 
-Option two: Set your log shipping for an existing blob storage.
+Option two: [Set your log shipping for an existing blob storage](#option-two).
 
 # Option one:
 
@@ -13,20 +13,15 @@ Option two: Set your log shipping for an existing blob storage.
 
 ### 1. Deploy the Logz.io template
 
- 👇Deploy your logs from an existing blob storage
+ 👇Press deploy and configure the template:
 
  [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Flogzio%2Flogzio-azure-blob%2Fdevelop%2Fdeployments%2FdeploymentTemplateForNewStorage.json)
 
-### 2. Configure the template
-
-Make sure to use these settings:
-
-**In the BASICS section**
+**BASICS:**
 * **Resource group**: Click **Create new**. <br />
   Give a meaningful **Name**, such as "logzioEventHubIntegration", and then click **OK**.
-* **Location**: Choose the same region as the Azure services that will stream data to this Event Hub.
 
-**In the SETTINGS section:**
+**SETTINGS:**
 * **Logs listener host**: Use the listener URL for your logs account region.
   If your login URL is app.logz.io, use `listener.logz.io` (this is the default setting).
   If your login URL is app-eu.logz.io, use `listener-eu.logz.io`.
@@ -36,10 +31,10 @@ At the bottom of the page, select **I agree to the terms and conditions stated a
 
 Deployment can take a few minutes.
 
-### 3. _(Optional)_ Backup storage account for shipping timeouts
+### 2. _(Optional)_ Backup storage account for shipping timeouts
 Add [backup storage account](#optional-add-backup-storage-account-for-shipping-timeouts) for shipping timeouts
 
-### 4. Check Logz.io for your logs
+### 3. Check Logz.io for your logs
 
 Upload blobs to your storage account and watch them in Kibana.
 
@@ -55,20 +50,17 @@ Upload blobs to your storage account and watch them in Kibana.
 
 ### 1. Deploy the Logz.io template
 
- 👇Deploy your logs from an existing blob storage
+  👇Press deploy and configure the template:
 
  [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Flogzio%2Flogzio-azure-blob%2Fdevelop%2Fdeployments%2FdeploymentTemplate.json)
 
-### 2. Configure the template
-
-Make sure to use these settings:
-
-**In the BASICS section**
+**BASICS:**
 * **Resource group**: Click **Create new**. <br />
   Give a meaningful **Name**, such as "logzioEventHubIntegration", and then click **OK**.
-* **Location**: Choose the same region as the Azure services that will stream data to this Event Hub.
+* **Location**: Choose the same region as your existing storage account.
 
-**In the SETTINGS section:**
+
+**SETTINGS:**
 * **Logs listener host**: Use the listener URL for your logs account region.
   If your login URL is app.logz.io, use `listener.logz.io` (this is the default setting).
   If your login URL is app-eu.logz.io, use `listener-eu.logz.io`.
@@ -78,7 +70,7 @@ At the bottom of the page, select **I agree to the terms and conditions stated a
 
 Deployment can take a few minutes.
 
-### 3. Build a blob container (if you don't have one)
+### 2. Build a blob container (if you don't have one)
 On your storage account:
 1. Go to **Containers**.
 2. Add a new container:
@@ -86,7 +78,7 @@ On your storage account:
     * Public access level: choose **Blob**.
 3. Press **OK**.
 
-### 4. Build an event subscription
+### 3. Build an event subscription
 On your storage account:
 1. Go to **Events**. 
 

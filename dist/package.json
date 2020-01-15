@@ -9,6 +9,7 @@
   "author": "Roni Shaham",
   "license": "ISC",
   "dependencies": {
+    "asyncawait": "^3.0.0",
     "azure-storage": "^2.10.3",
     "dotenv": "^8.2.0",
     "jest": "^24.9.0",
