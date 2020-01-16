@@ -36,10 +36,7 @@ At the bottom of the page, select **I agree to the terms and conditions stated a
 
 Deployment can take a few minutes.
 
-### 3. _(Optional)_ Backup storage account for shipping timeouts
-Add [backup storage account](#optional-add-backup-storage-account-for-shipping-timeouts) for shipping timeouts
-
-### 4. Check Logz.io for your logs
+### 3. Check Logz.io for your logs
 
 Upload blobs to your storage account and watch them in Kibana.
 
@@ -105,30 +102,6 @@ On your storage account:
 
 ![Account kind](images/create-event-subscription.png)
 
-### 5. _(Optional)_ Backup storage account for shipping timeouts
-Add [backup storage account](#optional-add-backup-storage-account-for-shipping-timeouts) for shipping timeouts
-
-### 6. Check Logz.io for your logs
+### 5. Check Logz.io for your logs
 
 Upload blobs to your storage account and watch them in Kibana.
-
-# _(Optional)_ Add backup storage account for shipping timeouts
-
-optional-add-backup-storage-account-for-shipping-timeouts
-
-You can configure logzio-azure-serverless to back up your blobs to Azure Blob Storage,
-so if the connection to Logz.io times out or an error occurs, you'll still have a backup of any dropped data that didn't get shipped.
-
-To do this, expand your function app's left menu, and then click **Integrate**.
-
-In the top of the triggers panel, click **Azure Blob Storage (outputBlob)**.
-The _Azure Blob Storage output_ settings are displayed.
-* Blob parameter name: **outputBlob**
-* Path: **logziologsfailcontainer/{output-blob}**
-* Storage account connection: **LogsStorageConnectionString**
-* Press **Save**.
-
-![New Blob output](images/output-blob-storage.png)
-
-**Note:** For more information on Azure Blob output binding, see [Azure Blob storage bindings for Azure Functions > Output](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-storage-blob#output) from Microsoft.
-
