@@ -1,107 +1,172 @@
-# logzio-azure-blob
-This repo contains the code and instructions you'll need to ship logs from your Azure Blob Storage to Logz.io.
-At the end of this process, your Azure function will forward logs from an Azure Blob Stroage Account to your Logz.io account.
+# Ship Azure Blob logs
 
-## Setting log shipping from Azure
-Option one: Build a new blob storage account and set your log shipping.
+To simplify shipping of your Azure Blob logs,
+we provide an automated deployment process.
 
-Option two: Set your log shipping for an existing blob storage.
+At the end of this process,
+your Azure function will forward logs from Azure Blob Storage
+to your Logz.io account.
 
-# Option one:
+<!-- tabContainer:start -->
+<div class="branching-container">
 
-## Build a new blob storage account and set your log shipping
+* [For a new blob](#new-blob-config)
+* [For an existing blob](#existing-blob-config)
 
-### 1. Deploy the Logz.io template
+<!-- tab:start -->
+<div id="new-blob-config">
 
- 👇Deploy your logs from an existing blob storage
+## Set up shipping for a new blob
 
- [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Flogzio%2Flogzio-azure-blob%2Fdevelop%2Fdeployments%2FdeploymentTemplateForNewStorage.json)
+<div class="tasklist">
 
-### 2. Configure the template
+### 1. Configure an automated deployment
 
-Make sure to use these settings:
+👇 Click this button to start the automated deployment.
 
-**In the BASICS section**
-* **Resource group**: Click **Create new**. <br />
-  Give a meaningful **Name**, such as "logzioEventHubIntegration", and then click **OK**.
-* **Location**: Choose the same region as the Azure services that will stream data to this Event Hub.
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Flogzio%2Flogzio-azure-blob%2Fmaster%2Fdeployments%2FdeploymentTemplateForNewStorage.json)
 
-**In the SETTINGS section:**
-* **Logs listener host**: Use the listener URL for your logs account region.
-  If your login URL is app.logz.io, use `listener.logz.io` (this is the default setting).
-  If your login URL is app-eu.logz.io, use `listener-eu.logz.io`.
-* **Logs account token**: Use the [token](https://app.logz.io/#/dashboard/settings/general) of the logs account you want to ship to.
+You'll be taken to Azure,
+where you'll configure the resources to be deployed.
+Make sure to use the settings shown below.
 
-At the bottom of the page, select **I agree to the terms and conditions stated above**, and then click **Purchase** to deploy.
+#### In the BASICS section
 
-Deployment can take a few minutes.
+| Parameter | Description |
+|---|---|
+| Resource group | Click **Create new**. Give a meaningful **Name**, such as "logzioEventHubIntegration", and then click **OK**. |
+| Location | Choose the same region as the Azure services that will stream data to this Event Hub. |
 
-### 3. Check Logz.io for your logs
+#### In the SETTINGS section
 
-Upload blobs to your storage account and watch them in Kibana.
+| Parameter | Description |
+|---|---|
+| Logs listener host | Use the listener URL for your logs account region. For more information on finding your account's region, see [Account region](https://docs.logz.io/user-guide/accounts/account-region.html). |
+| Logs account token | Use the [token](https://app.logz.io/#/dashboard/settings/general) of the logs account you want to ship to. |
 
-# Option two:
-
-## Set your log shipping for an existing blob storage
-
-*** This option is for storage account of kind "StorageV2" only.
- To find out your storage account's kind go to your Storage account/overview. ***
-
-![Account kind](images/storage-account-settings.png)
-
-
-### 1. Deploy the Logz.io template
-
- 👇Deploy your logs from an existing blob storage
-
- [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Flogzio%2Flogzio-azure-blob%2Fdevelop%2Fdeployments%2FdeploymentTemplate.json)
-
-### 2. Configure the template
-
-Make sure to use these settings:
-
-**In the BASICS section**
-* **Resource group**: Click **Create new**. <br />
-  Give a meaningful **Name**, such as "logzioEventHubIntegration", and then click **OK**.
-* **Location**: Choose the same region as the Azure services that will stream data to this Event Hub.
-
-**In the SETTINGS section:**
-* **Logs listener host**: Use the listener URL for your logs account region.
-  If your login URL is app.logz.io, use `listener.logz.io` (this is the default setting).
-  If your login URL is app-eu.logz.io, use `listener-eu.logz.io`.
-* **Logs account token**: Use the [token](https://app.logz.io/#/dashboard/settings/general) of the logs account you want to ship to.
-
-At the bottom of the page, select **I agree to the terms and conditions stated above**, and then click **Purchase** to deploy.
+At the bottom of the page, select **I agree to the terms and conditions stated above**,
+and then click **Purchase** to deploy.
 
 Deployment can take a few minutes.
 
-### 3. Build a blob container (if you don't have one)
-On your storage account:
-1. Go to **Containers**.
-2. Add a new container:
-    * Name: **choose a uniqe name**.
-    * Public access level: choose **Blob**.
-3. Press **OK**.
+### 2. Check Logz.io for your logs
 
-### 4. Build an event subscription
-On your storage account:
-1. Go to **Events**. 
+Give your logs some time to get from your system to ours, and then open Kibana.
+If everything went according to plan, you should see logs with the type `blobStorage` in Kibana.
 
-    (If you do not have an 'Events' tab, your storage account is not of kind 'StorageV2', please deploy with [option one](#option-one)). 
+If you still don’t see your logs, see [log shipping troubleshooting](https://docs.logz.io/user-guide/log-shipping/log-shipping-troubleshooting.html).
 
-2. Add a new event subscription:
-    * Name: **choose a uniqe name**.
-    * Event Schema: **Event Grid Schema**.
-    * Event types/Filter to event types: Mark only **Blob Created** (Unmark the rest).
-    * Endpoint type: 
-        * Choose **eventhub**.
-        * Press **Select an endpoint**
-        * Resource Group: put your **new** resource group.
-        * Press **Confirm Seletion**.
-    * Press 'Create'. 
+</div>
 
-![Account kind](images/create-event-subscription.png)
+</div>
+<!-- tab:end -->
 
-### 5. Check Logz.io for your logs
+<!-- tab:start -->
+<div id="existing-blob-config">
 
-Upload blobs to your storage account and watch them in Kibana.
+## Set up shipping for an existing blob
+
+### Important
+
+This deployment works with General-purpose v2 storage accounts only.
+These are listed as "StorageV2" in the
+[_Storage accounts_](https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.Storage%2FStorageAccounts)
+list,
+under the _Kind_ column.
+If you don't have a StorageV2 account,
+don't continue with this procedure.
+Instead, set up this deployment for an existing blob.
+
+<div class="tasklist">
+
+### 1. Configure an automated deployment
+
+👇 Click this button to start the automated deployment.
+
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Flogzio%2Flogzio-azure-blob%2Fmaster%2Fdeployments%2FdeploymentTemplate.json)
+
+You'll be taken to Azure,
+where you'll configure the resources to be deployed.
+Make sure to use the settings shown below.
+
+#### In the BASICS section
+
+| Parameter | Description |
+|---|---|
+| Resource group | Click **Create new**. Give a meaningful **Name**, such as "logzioEventHubIntegration", and then click **OK**. |
+| Location | Choose the same region as the Azure services that will stream data to this Event Hub. |
+
+#### In the SETTINGS section
+
+| Parameter | Description |
+|---|---|
+| Logs listener host | Use the listener URL for your logs account region. For more information on finding your account's region, see [Account region](https://docs.logz.io/user-guide/accounts/account-region.html). |
+| Logs account token | Use the [token](https://app.logz.io/#/dashboard/settings/general) of the logs account you want to ship to. |
+
+At the bottom of the page, select **I agree to the terms and conditions stated above**,
+and then click **Purchase** to deploy.
+
+Deployment can take a few minutes.
+
+### 2. _(If needed)_ Build a blob container
+
+If you don't have a blob container, build one now.
+
+In the
+[_Storage accounts_](https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.Storage%2FStorageAccounts)
+page, click your StorageV2 storage account to open it.
+
+Click the **Containers** card to continue to the _Containers_ page.
+
+Click **+ Container** in the toolbar.
+
+Give your container a meaningful **Name**,
+and choose **Blob** from the **Public access level** list.
+
+Press **OK** to create your container
+and return to the _Containers_ page.
+
+### 3. Build an event subscription
+
+In the left menu, click **Events**.
+
+Click **+ Event Subscription** in the toolbar.
+
+#### In "EVENT SUBSCRIPTION DETAILS"
+
+| Parameter | Description |
+|---|---|
+| Name | Give a meaningful name. |
+| Event Schema | Choose **Event Grid Schema** |
+
+#### In "EVENT TYPES"
+
+Give the event subscription a meaningful **Name**.
+
+| Parameter | Description |
+|---|---|
+| Filter to Event Types | Select **Blob Created** only, and clear the remaining check boxes. |
+
+#### In "ENDPOINT DETAILS"
+
+| Parameter | Description |
+|---|---|
+| Endpoint Type | Choose **Event Hubs**. |
+| Endpoint | Click **Select an endpoint**, then choose your new **Resource group** (we gave the sample name "logzioEventHubIntegration" above). |
+
+Click **Create** to continue.
+
+### 4. Check Logz.io for your logs
+
+Give your logs some time to get from your system to ours, and then open Kibana.
+If everything went according to plan, you should see logs with the type `blobStorage` in Kibana.
+
+If you still don’t see your logs, see [log shipping troubleshooting](https://docs.logz.io/user-guide/log-shipping/log-shipping-troubleshooting.html).
+
+</div>
+
+</div>
+<!-- tab:end -->
+
+</div>
+<!-- tabContainer:end -->
