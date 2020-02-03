@@ -4,17 +4,10 @@
       "type": "eventHubTrigger",
       "name": "eventHubMessages",
       "direction": "in",
-      "path": "insights-operational-logs",
+      "path": "logzioeventhub",
       "connection": "AzureEventHubLogsConnectionString",
       "cardinality": "many",
-      "consumerGroup": "LogzioLConsumerGroup"
-    },
-    {
-      "connection": "LogsStorageConnectionString",
-      "type": "blob",
-      "name": "outputBlob",
-      "path": "logzio-failed-logs/{rand-guid}",
-      "direction": "out"
+      "consumerGroup": "logzioconsumergroup"
     }
   ]
 }
