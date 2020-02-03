@@ -22,7 +22,7 @@
             "defaultValue": "[concat('LogzioEventHubNamespace', uniqueString(resourceGroup().id))]",
             "type": "String"
         },
-		"EventHubBlobName": {
+	"EventHubBlobName": {
             "defaultValue": "logzioeventhub",
             "type": "String"
         },
@@ -39,7 +39,7 @@
             "type": "String"
         },
         "Branch": {
-            "defaultValue": "develop",
+            "defaultValue": "master",
             "type": "String"
         },
         "LogzioConsumerGroups": {
