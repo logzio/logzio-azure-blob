@@ -4,7 +4,7 @@ To simplify shipping of your Azure Blob logs,
 we provide an automated deployment process.
 
 At the end of this process,
-your Azure function will forward logs from Azure Blob Storage
+this integration will forward logs from Azure Blob Storage
 to your Logz.io account.
 
 <!-- tabContainer:start -->
