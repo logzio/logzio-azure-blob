@@ -16,11 +16,11 @@ to your Logz.io account.
 <!-- tab:start -->
 <div id="new-blob-config">
 
-#### New blob storage setup
+## New blob storage setup
 
 <div class="tasklist">
 
-##### 1. Configure an automated deployment
+### 1. Configure an automated deployment
 
 👇 Click this button to start the automated deployment.
 
@@ -30,14 +30,14 @@ You'll be taken to Azure,
 where you'll configure the resources to be deployed.
 Make sure to use the settings shown below.
 
-###### In the BASICS section
+#### In the BASICS section
 
 | Parameter | Description |
 |---|---|
 | Resource group | Click **Create new**. Give a meaningful **Name**, such as "logzioEventHubIntegration", and then click **OK**. |
 | Location | Choose the same region as the Azure services that will stream data to this Event Hub. |
 
-###### In the SETTINGS section
+#### In the SETTINGS section
 
 | Parameter | Description |
 |---|---|
@@ -49,7 +49,7 @@ and then click **Purchase** to deploy.
 
 Deployment can take a few minutes.
 
-##### 2. Check Logz.io for your logs
+### 2. Check Logz.io for your logs
 
 Give your logs some time to get from your system to ours, and then open Kibana.
 If everything went according to plan, you should see logs with the type `blobStorage` in Kibana.
@@ -64,7 +64,7 @@ If you still don’t see your logs, see [log shipping troubleshooting](https://d
 <!-- tab:start -->
 <div id="existing-blob-config">
 
-#### Existing blob storage setup
+## Existing blob storage setup
 
 **Important**:
 **If you don't have a StorageV2 account, stop here.**
@@ -79,7 +79,7 @@ under the _Kind_ column.
 
 <div class="tasklist">
 
-##### 1. Configure an automated deployment
+### 1. Configure an automated deployment
 
 👇 Click this button to start the automated deployment.
 
@@ -89,14 +89,14 @@ You'll be taken to Azure,
 where you'll configure the resources to be deployed.
 Make sure to use the settings shown below.
 
-###### In the BASICS section
+#### In the BASICS section
 
 | Parameter | Description |
 |---|---|
 | Resource group | Click **Create new**. Give a meaningful **Name**, such as "logzioEventHubIntegration", and then click **OK**. |
 | Location | Choose the same region as the Azure services that will stream data to this Event Hub. |
 
-###### In the SETTINGS section
+#### In the SETTINGS section
 
 | Parameter | Description |
 |---|---|
@@ -108,7 +108,7 @@ and then click **Purchase** to deploy.
 
 Deployment can take a few minutes.
 
-##### 2. _(If needed)_ Build a blob container
+### 2. _(If needed)_ Build a blob container
 
 If you don't have a blob container, build one now.
 
@@ -126,20 +126,20 @@ and choose **Blob** from the **Public access level** list.
 Press **OK** to create your container
 and return to the _Containers_ page.
 
-##### 3. Build an event subscription
+### 3. Build an event subscription
 
 In the left menu, click **Events**.
 
 Click **+ Event Subscription** in the toolbar.
 
-###### In "EVENT SUBSCRIPTION DETAILS"
+#### In "EVENT SUBSCRIPTION DETAILS"
 
 | Parameter | Description |
 |---|---|
 | Name | Give a meaningful name. |
 | Event Schema | Choose **Event Grid Schema** |
 
-###### In "EVENT TYPES"
+#### In "EVENT TYPES"
 
 Give the event subscription a meaningful **Name**.
 
@@ -147,7 +147,7 @@ Give the event subscription a meaningful **Name**.
 |---|---|
 | Filter to Event Types | Select **Blob Created** only, and clear the remaining check boxes. |
 
-###### In "ENDPOINT DETAILS"
+#### In "ENDPOINT DETAILS"
 
 | Parameter | Description |
 |---|---|
@@ -156,7 +156,7 @@ Give the event subscription a meaningful **Name**.
 
 Click **Create** to continue.
 
-##### 4. Check Logz.io for your logs
+### 4. Check Logz.io for your logs
 
 Give your logs some time to get from your system to ours, and then open Kibana.
 If everything went according to plan, you should see logs with the type `blobStorage` in Kibana.
