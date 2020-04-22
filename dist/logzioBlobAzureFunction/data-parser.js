@@ -31,7 +31,7 @@ class DataParser {
         logsArray = this._parseJsonToLogs(data);
         break;
       default:
-        logsArray = data;
+        logsArray = data.split("\n");
     }
     var parsedMessages = [];
     if (logsArray instanceof Array) {

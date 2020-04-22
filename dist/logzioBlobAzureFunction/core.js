@@ -17,18 +17,27 @@ function getCallBackFunction(context) {
 
 const getParserOptions = () => ({
   token: process.env.LogzioToken,
-  host: process.env.LogzioHost
+  host: process.env.LogzioHost,
+  format: process.env.Format
 });
 
-function sendData(data, logType, context) {
+function extractFileType(fileExtension){
+  var fileType = fileExtension.pop();
+  if (fileType === gzip){
+    fileType = fileExtension.pop();
+  }
+  return fileType;
+}
+
+function sendData(data, context) {
   const callBackFunction = getCallBackFunction(context);
   const dataParser = new DataParser({
     internalLogger: context
   });
-  const { host, token } = getParserOptions();
+  var { host, token, format } = getParserOptions();
   const parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(
     data,
-    logType
+    format
   );
   const logzioShipper = logger.createLogger({
     token: token,
@@ -47,9 +56,16 @@ function sendData(data, logType, context) {
   logzioShipper.sendAndClose(callBackFunction);
 }
 
-function getData(url, compressed, callback) {
+function getData(url, callback) {
+  const fileExtension = url.split("/").pop().split(".");
+  const isCompressed = fileExtension[fileExtension.length - 1] === gzip;
+  const fileType = extractFileType(fileExtension);
+  const format = process.env.Format;
+  if (fileType != format || [null, undefined].includes(format)){
+      process.env.Format = "text";
+  }
   request(url, { encoding: null }, function(err, response, body) {
-    if (compressed) {
+    if (isCompressed) {
       zlib.gunzip(body, function(err, dezipped) {
         callback(dezipped.toString());
       });
@@ -63,14 +79,8 @@ function processEventHubMessages(context, eventHubMessages) {
   context.log(`Starting Logz.io Azure function with logs`);
   eventHubMessages.forEach(message => {
     const url = message[event]["data"]["url"];
-    const splitUrl = url.split(".");
-    var fileExtension = splitUrl.pop();
-    const isCompressed = fileExtension === gzip;
-    if (isCompressed) {
-      fileExtension = splitUrl[splitUrl.length - 1];
-    }
-    getData(url, isCompressed, function(data) {
-      sendData(data, fileExtension, context);
+    getData(url, function(data) {
+      sendData(data, context);
     });
   });
 }

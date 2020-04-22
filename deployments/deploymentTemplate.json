@@ -53,6 +53,10 @@
         "LogzioToken": {
             "type": "String"
         },
+        "Format": {
+            "defaultValue": "text",
+            "type": "String"
+        },
         "AuthorizationRulesLogzioSharedAccessKey": {
             "defaultValue": "LogzioLSharedAccessKey",
             "type": "String"
@@ -257,6 +261,10 @@
                         {
                             "name": "LogsStorageConnectionString",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountsLogzioFailSafe'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountsLogzioFailSafe')),'2015-05-01-preview').key1,';EndpointSuffix=core.windows.net')]"
+                        },
+                        {
+                            "name": "LogzioToken",
+                            "value": "[parameters('LogzioToken')]"
                         },
                         {
                             "name": "LogzioToken",

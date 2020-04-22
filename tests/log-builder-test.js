@@ -18,7 +18,7 @@ Jim Grayson,Senior Manager,(555)761-2385,"Spoke Tuesday; he is interested"
 Prescilla Winston,Development Director,(555)218-3981, "said to call again next week"
 Melissa Potter,Head of Accounts,(555)791-3471,"Not interested; gave referral"`;
 
-const multiJson = 
+const multiLines = 
 `{ "time": "2019-12-16T12:17:07.783Z", "systemId": "mySystemID", "category": "NetworkSecurityGroupEvent", "resourceId": "/SUBSCRIPTIONS/6EFCEE72-C8D7-4DE7-9E6A-4B20FDCA5725/RESOURCEGROUPS/LOGZIOINTEGRATION/PROVIDERS/MICROSOFT.NETWORK", "operationName": "NetworkSecurityGroupEvents", "properties": {"vnetResourceGuid":"{01A750B5-2BCC-461B-A3DA-8958FFB4DDF7}","subnetPrefix":"172.16.0.0/24","primaryIPv4Address":"172.16.0.4","ruleName":"DefaultRule_AllowVnetOutBound","direction":"Out","priority":65000,"type":"allow","conditions":{"destinationPortRange":"0-65535","sourcePortRange":"0-65535","":"","":""}}}
 { "time": "2019-12-16T12:17:07.783Z", "systemId": "mySystemID", "category": "NetworkSecurityGroupEvent", "resourceId": "/SUBSCRIPTIONS/6EFCEE72-C8D7-4DE7-9E6A-4B20FDCA5725/RESOURCEGROUPS/LOGZIOINTEGRATION/PROVIDERS/MICROSOFT.NETWORK", "operationName": "NetworkSecurityGroupEvents", "properties": {"vnetResourceGuid":"{01A750B5-2BCC-461B-A3DA-8958FFB4DDF7}","subnetPrefix":"172.16.0.0/24","primaryIPv4Address":"172.16.0.4","ruleName":"DefaultRule_AllowInternetOutBound","direction":"Out","priority":65001,"type":"allow","conditions":{"destinationPortRange":"0-65535","sourcePortRange":"0-65535","":"","sourceIP":"0.0.0.0/0,0.0.0.0/0"}}}
 { "time": "2019-12-16T12:17:07.783Z", "systemId": "mySystemID", "category": "NetworkSecurityGroupEvent", "resourceId": "/SUBSCRIPTIONS/6EFCEE72-C8D7-4DE7-9E6A-4B20FDCA5725/RESOURCEGROUPS/LOGZIOINTEGRATION/PROVIDERS/MICROSOFT.NETWORK", "operationName": "NetworkSecurityGroupEvents", "properties": {"vnetResourceGuid":"{01A750B5-2BCC-461B-A3DA-8958FFB4DDF7}","subnetPrefix":"172.16.0.0/24","primaryIPv4Address":"172.16.0.4","ruleName":"DefaultOutboundDenyAll","direction":"Out","priority":65500,"type":"block","conditions":{"None":""}}}
@@ -43,7 +43,7 @@ const multiJson =
 
 module.exports = {
     simpleStringLog,
-    multiJson,
+    multiLines,
     validJson,
     invalidJson,
     validCSV
