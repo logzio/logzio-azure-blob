@@ -101,10 +101,10 @@ describe("Azure Blob Storage functions - unittest", () => {
         .query({
           token: dummyToken
         })
-        .reply(200, (response) => {
+        .reply(200, () => {
           done();
         });
-        logHandler.sendData(stringLog, context);
+        logHandler.sendData(process.env.Format, stringLog, context);
     });
   });
 });

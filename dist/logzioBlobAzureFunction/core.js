@@ -2,8 +2,13 @@ const logger = require("logzio-nodejs");
 const DataParser = require("./data-parser");
 const zlib = require("zlib");
 const request = require("request");
-const gzip = "gz";
 const event = 0;
+const fileTypes = {
+  text: "text",
+  log: "log",
+  json: "json",
+  gzip: "gz"
+}
 
 function getCallBackFunction(context) {
   return function callback(err, bulk) {
@@ -18,23 +23,14 @@ function getCallBackFunction(context) {
 const getParserOptions = () => ({
   token: process.env.LogzioToken,
   host: process.env.LogzioHost,
-  format: process.env.Format
 });
 
-function extractFileType(fileExtension){
-  var fileType = fileExtension.pop();
-  if (fileType === gzip){
-    fileType = fileExtension.pop();
-  }
-  return fileType;
-}
-
-function sendData(data, context) {
+function sendData(format, data, context) {
   const callBackFunction = getCallBackFunction(context);
   const dataParser = new DataParser({
     internalLogger: context
   });
-  var { host, token, format } = getParserOptions();
+  var { host, token } = getParserOptions();
   const parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(
     data,
     format
@@ -56,21 +52,32 @@ function sendData(data, context) {
   logzioShipper.sendAndClose(callBackFunction);
 }
 
-function getData(url, callback) {
-  const fileExtension = url.split("/").pop().split(".");
-  const isCompressed = fileExtension[fileExtension.length - 1] === gzip;
-  const fileType = extractFileType(fileExtension);
-  const format = process.env.Format;
-  if (fileType != format || [null, undefined].includes(format)){
-      process.env.Format = "text";
+function extractFileType(url, isCompressed){
+  const urlArray = url.split(".");
+  if (isCompressed){
+    urlArray.pop();
   }
+  const fileType  = urlArray.pop();
+  var format = process.env.Format;
+  //if 'format' doesn't suit file type send as text, except ".log" as json
+  if (!(fileType === fileTypes.log && format === fileTypes.json)){
+    if (fileType != format || [null, undefined].includes(format)){
+        format = fileTypes.text;
+    }
+  }
+  return format;
+}
+
+function getData(url, callback) {
+  const isCompressed =  url.endsWith(fileTypes.gzip); 
+  const format = extractFileType(url, isCompressed);    
   request(url, { encoding: null }, function(err, response, body) {
     if (isCompressed) {
       zlib.gunzip(body, function(err, dezipped) {
-        callback(dezipped.toString());
+        callback(dezipped.toString(), format);
       });
     } else {
-      callback(body.toString());
+      callback(body.toString(), format);
     }
   });
 }
@@ -79,8 +86,8 @@ function processEventHubMessages(context, eventHubMessages) {
   context.log(`Starting Logz.io Azure function with logs`);
   eventHubMessages.forEach(message => {
     const url = message[event]["data"]["url"];
-    getData(url, function(data) {
-      sendData(data, context);
+    getData(url, function(data, format) {
+      sendData(format, data, context);
     });
   });
 }
