@@ -267,10 +267,6 @@
                             "value": "[parameters('LogzioToken')]"
                         },
                         {
-                            "name": "LogzioToken",
-                            "value": "[parameters('LogzioToken')]"
-                        },
-                        {
                             "name": "Format",
                             "value": "[parameters('Format')]"
                         },  
