@@ -7,8 +7,9 @@ const fileTypes = {
   text: "text",
   log: "log",
   json: "json",
-  gzip: "gz"
+  csv: "csv"
 }
+const gzip = "gz";
 
 function getCallBackFunction(context) {
   return function callback(err, bulk) {
@@ -30,7 +31,7 @@ function sendData(format, data, context) {
   const dataParser = new DataParser({
     internalLogger: context
   });
-  var { host, token } = getParserOptions();
+  const { host, token } = getParserOptions();
   const parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(
     data,
     format
@@ -59,17 +60,17 @@ function extractFileType(url, isCompressed){
   }
   const fileType  = urlArray.pop();
   var format = process.env.Format;
-  //if 'format' doesn't suit file type send as text, except ".log" as json
-  if (!(fileType === fileTypes.log && format === fileTypes.json)){
-    if (fileType != format || [null, undefined].includes(format)){
-        format = fileTypes.text;
-    }
+  if ([null, undefined].includes(format)){
+      format = fileTypes.text;
+  }
+  if (fileType === fileTypes.csv){
+    format = fileTypes.csv;
   }
   return format;
 }
 
 function getData(url, callback) {
-  const isCompressed =  url.endsWith(fileTypes.gzip); 
+  const isCompressed =  url.endsWith(gzip); 
   const format = extractFileType(url, isCompressed);    
   request(url, { encoding: null }, function(err, response, body) {
     if (isCompressed) {
@@ -84,6 +85,7 @@ function getData(url, callback) {
 
 function processEventHubMessages(context, eventHubMessages) {
   context.log(`Starting Logz.io Azure function with logs`);
+  
   eventHubMessages.forEach(message => {
     const url = message[event]["data"]["url"];
     getData(url, function(data, format) {
