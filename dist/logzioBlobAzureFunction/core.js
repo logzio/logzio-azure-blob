@@ -84,7 +84,6 @@ function getData(url, callback) {
 
 function processEventHubMessages(context, eventHubMessages) {
   context.log(`Starting Logz.io Azure function with logs`);
-  process.env.Format = "json";
   eventHubMessages.forEach(message => {
     const url = message[event]["data"]["url"];
     getData(url, function(data, format) {
