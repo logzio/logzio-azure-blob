@@ -43,7 +43,7 @@ Make sure to use the settings shown below.
 |---|---|
 | Logs listener host | Use the listener URL for your logs account region. For more information on finding your account's region, see [Account region](https://docs.logz.io/user-guide/accounts/account-region.html). |
 | Logs account token | Use the [token](https://app.logz.io/#/dashboard/settings/general) of the logs account you want to ship to. |
-
+| Format (Default: text) | Choose one of the supported parsing formats: json/csv/text  |
 At the bottom of the page, select **I agree to the terms and conditions stated above**,
 and then click **Purchase** to deploy.
 
@@ -102,7 +102,7 @@ Make sure to use the settings shown below.
 |---|---|
 | Logs listener host | Use the listener URL for your logs account region. For more information on finding your account's region, see [Account region](https://docs.logz.io/user-guide/accounts/account-region.html). |
 | Logs account token | Use the [token](https://app.logz.io/#/dashboard/settings/general) of the logs account you want to ship to. |
-| Format (Default: text) | Your files format: json/csv/text  |
+| Format (Default: text) | Choose one of the supported parsing formats: json/csv/text  |
 
 At the bottom of the page, select **I agree to the terms and conditions stated above**,
 and then click **Purchase** to deploy.
