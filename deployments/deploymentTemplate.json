@@ -53,6 +53,10 @@
         "LogzioToken": {
             "type": "String"
         },
+        "Format": {
+            "defaultValue": "text",
+            "type": "String"
+        },
         "AuthorizationRulesLogzioSharedAccessKey": {
             "defaultValue": "LogzioLSharedAccessKey",
             "type": "String"
@@ -262,6 +266,14 @@
                             "name": "LogzioToken",
                             "value": "[parameters('LogzioToken')]"
                         },
+                        {
+                            "name": "LogzioToken",
+                            "value": "[parameters('LogzioToken')]"
+                        },
+                        {
+                            "name": "Format",
+                            "value": "[parameters('Format')]"
+                        },  
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                             "value": "[reference(resourceId('microsoft.insights/components/', parameters('AppInsightsName')), '2015-05-01').InstrumentationKey]"

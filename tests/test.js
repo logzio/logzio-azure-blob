@@ -5,20 +5,26 @@ const nock = require("nock");
 const dummyHost = "listener.logz.io";
 const nockHttpAddress = `https://${dummyHost}:8071`;
 const dummyToken = '123456789';
-const context = {
+const formats = {
+  csv: "csv",
+  json: "json",
+  text: "text"
+ };
+ const context = {
   log: () => {},
   done: () =>{},
   err: () => {}
 };
 const validItem = {
-  Lead: "Melissa Potter",
-  Title: "Head of Accounts",
-  Phone: "(555)791-3471",
-  Notes: '"Not interested; gave referral"'
-};
-const parseMessageTest = () => {
+  Lead: 'Jim Grayson',
+  Title: 'Senior Manager',
+  Phone: '(555)761-2385',
+  Notes: '"Spoke Tuesday; he is interested"'
+}
+const validItemIndex = 0;
+const parseJsonTest = () => {
   const dataParser = new DataParser(context);
-  var jsonArray = JSON.parse(`[${multiJson.split("\n")}]`);
+  var jsonArray = JSON.parse(`[${multiLines.split("\n")}]`);
   jsonArray.forEach((log, index) => {
     if (log.time) {
       delete Object.assign(log, {
@@ -29,52 +35,64 @@ const parseMessageTest = () => {
   });
   return jsonArray;
 };
-const stringLog = JSON.stringify(logsBuilder.simpleStringLog);
+const stringLog = logsBuilder.simpleStringLog;
 const validJson = logsBuilder.validJson;
-const multiJson = logsBuilder.multiJson;
+const multiLines = logsBuilder.multiLines;
 const validCSV = logsBuilder.validCSV;
 var parseMessagesArray;
 
 describe("Azure Blob Storage functions - unittest", () => {
+
   it("Simple string logs", () => {
     const dataParser = new DataParser(context);
-    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(stringLog, "text");
-    expect(parseMessagesArray[0]).toBe(stringLog);
+    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(stringLog, formats.text);
+    const validStringLogArray = [ stringLog ];
+    expect(parseMessagesArray).toEqual(validStringLogArray);
   });
 
   it("Json logs", () => {
     const dataParser = new DataParser(context);
-    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(validJson, "json");
+    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(validJson, formats.json);
     expect(parseMessagesArray.length).toBe(1);
-    expect(JSON.stringify(parseMessagesArray[0])).toBe(
-      JSON.stringify(validJson)
+    expect(parseMessagesArray[0]).toEqual(
+      validJson
     );
   });
 
-  it("Multiple Json logs", () => {
+  it("Multiple lines as Json", () => {
     const dataParser = new DataParser(context);
-    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(multiJson, "json");
-    var jsonParsedValid = parseMessageTest();
-    expect(parseMessagesArray.length).toBe(jsonParsedValid.length);
-    expect(JSON.stringify(parseMessagesArray)).toBe(
-      JSON.stringify(jsonParsedValid)
+    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(multiLines, formats.json);
+    var jsonParsedValid = parseJsonTest();
+    expect(parseMessagesArray).toEqual(
+      jsonParsedValid
+    );
+  });
+
+  it("Multiple lines as text", () => {
+    const format = process.env.Format;
+    const dataParser = new DataParser(context);
+    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(multiLines, formats.text);
+    var textParsedValid = multiLines.split("\n");
+    expect(parseMessagesArray).toEqual(
+      (textParsedValid)
     );
   });
 
   it("CSV logs", () => {
     const dataParser = new DataParser(context);
     fileLength = validCSV.split("\n").length - 1;
-    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(validCSV, "csv");
+    parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(validCSV, formats.csv);
     expect(parseMessagesArray.length).toBe(fileLength);
-    expect(JSON.stringify(parseMessagesArray[fileLength - 1])).toBe(
-      JSON.stringify(validItem)
+    expect(parseMessagesArray[validItemIndex]).toEqual(
+      validItem
     );
   });
-
-  describe("Test functions full flow", () => {
+  
+  describe("Test functionsz full flow", () => {
     beforeEach(() => {
       process.env.LogzioToken = dummyToken;
       process.env.LogzioHost = dummyHost;
+      process.env.Format = formats.text;
     });
 
     it("logzio Host is called", done => {
@@ -86,18 +104,7 @@ describe("Azure Blob Storage functions - unittest", () => {
         .reply(200, () => {
           done();
         });
-        logHandler.sendData(stringLog, "text", context);
-    });
-
-    it("logzio Host is called", done => {
-      nock(nockHttpAddress)
-        .post("/")
-        .query({
-          token: dummyToken
-        })
-        .reply(200, () => {});
-
-        logHandler.sendData(stringLog, "text", { ...context, done });
+        logHandler.sendData(process.env.Format, stringLog, context);
     });
   });
 });
