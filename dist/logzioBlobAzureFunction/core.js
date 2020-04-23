@@ -5,7 +5,6 @@ const request = require("request");
 const event = 0;
 const fileTypes = {
   text: "text",
-  log: "log",
   json: "json",
   csv: "csv"
 }
@@ -59,12 +58,12 @@ function extractFileType(url, isCompressed){
     urlArray.pop();
   }
   const fileType  = urlArray.pop();
-  var format = process.env.Format;
-  if ([null, undefined].includes(format)){
-      format = fileTypes.text;
-  }
+  const format = process.env.Format;
   if (fileType === fileTypes.csv){
-    format = fileTypes.csv;
+    return fileTypes.csv;
+  }
+  if (![fileTypes.text, fileTypes.csv, fileTypes.json].includes(format)){
+    return fileTypes.text;
   }
   return format;
 }
@@ -85,7 +84,7 @@ function getData(url, callback) {
 
 function processEventHubMessages(context, eventHubMessages) {
   context.log(`Starting Logz.io Azure function with logs`);
-  
+  process.env.Format = "json";
   eventHubMessages.forEach(message => {
     const url = message[event]["data"]["url"];
     getData(url, function(data, format) {
