@@ -34,8 +34,8 @@ Make sure to use the settings shown below.
 
 | Parameter | Description |
 |---|---|
-| Resource group | Click **Create new**. Give a meaningful **Name**, such as "logzioEventHubIntegration", and then click **OK**. |
-| Location | Choose the same region as the Azure services that will stream data to this Event Hub. |
+| Resource group | Click **Create new**. Give a meaningful **Name**, such as "logziobBlobStorageIntegration", and then click **OK**. |
+| Location | Choose the same region as the Azure services that will stream data to this Blob storage. |
 
 #### In the SETTINGS section
 
@@ -94,8 +94,8 @@ Make sure to use the settings shown below.
 
 | Parameter | Description |
 |---|---|
-| Resource group | Click **Create new**. Give a meaningful **Name**, such as "logzioEventHubIntegration", and then click **OK**. |
-| Location | Choose the same region as the Azure services that will stream data to this Event Hub. |
+| Resource group | Choose your existing resource group, and then click **OK**. |
+| Location | Choose the same region as the Azure services that will stream data to this Blob storage. |
 
 #### In the SETTINGS section
 
@@ -154,7 +154,7 @@ Give the event subscription a meaningful **Name**.
 | Parameter | Description |
 |---|---|
 | Endpoint Type | Choose **Event Hubs**. |
-| Endpoint | Click **Select an endpoint**, then choose your new **Resource group** (we gave the sample name "logzioEventHubIntegration" above). |
+| Endpoint | Click **Select an endpoint**, then choose your **Resource group**. |
 
 Click **Create** to continue.
 
