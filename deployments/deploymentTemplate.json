@@ -2,6 +2,20 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "LogzioHost": {
+            "defaultValue": "listener.logz.io",
+            "type": "String"
+        },
+        "LogzioToken": {
+            "type": "String"
+        },
+        "Format": {
+            "defaultValue": "text",
+            "type": "String"
+        },
+        "BlobStorageConnectionString": {
+            "type": "String"
+        },
         "LogzioSitesFunctionAppName": {
             "defaultValue": "[concat('logzioBlobFunctionApp', uniqueString(resourceGroup().id))]",
             "type": "String"
@@ -22,7 +36,7 @@
             "defaultValue": "[concat('LogzioEventHubNamespace', uniqueString(resourceGroup().id))]",
             "type": "String"
         },
-	"EventHubBlobName": {
+	    "EventHubBlobName": {
             "defaultValue": "logzioeventhub",
             "type": "String"
         },
@@ -44,17 +58,6 @@
         },
         "LogzioConsumerGroups": {
             "defaultValue": "logzioconsumergroup",
-            "type": "String"
-        },
-        "LogzioHost": {
-            "defaultValue": "listener.logz.io",
-            "type": "String"
-        },
-        "LogzioToken": {
-            "type": "String"
-        },
-        "Format": {
-            "defaultValue": "text",
             "type": "String"
         },
         "AuthorizationRulesLogzioSharedAccessKey": {
@@ -253,6 +256,10 @@
                         {
                             "name": "LogzioHost",
                             "value": "[parameters('LogzioHost')]"
+                        },
+                        {
+                            "name": "BlobConnectionString",
+                            "value": "parameters('BlobStorageConnectionString')"
                         },
                         {
                             "name": "AzureEventHubLogsConnectionString",

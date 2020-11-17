@@ -26,7 +26,7 @@
             "defaultValue": "[concat('LogzioEventHubNamespace', uniqueString(resourceGroup().id))]",
             "type": "String"
         },
-	"EventHubBlobName": {
+	    "EventHubBlobName": {
             "defaultValue": "logzioeventhub",
             "type": "String"
         },
@@ -211,7 +211,7 @@
                 "name": "Standard_RAGRS",
                 "tier": "Standard"
             },
-            "kind": "Storage",
+            "kind": "StorageV2",
             "name": "[parameters('storageAccountsLogzioFailSafe')]",
             "apiVersion": "2019-04-01",
             "location": "[resourceGroup().location]",
@@ -302,6 +302,10 @@
                             "value": "[parameters('LogzioHost')]"
                         },
                         {
+                            "name": "BlobConnectionString",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('BlobStorageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('BlobStorageAccountName')),'2015-05-01-preview').key1,';EndpointSuffix=core.windows.net')]"
+                        },
+                        {
                             "name": "AzureEventHubLogsConnectionString",
                             "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/authorizationRules', parameters('EventHubNamespaceName'),parameters('AuthorizationRulesLogzioSharedAccessKey')), '2017-04-01').primaryConnectionString]"
                         },
@@ -375,7 +379,7 @@
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('BlobStorageAccountName'))]"
             ],
             "properties": {
-                "publicAccess": "Blob"
+                "publicAccess": "None"
             }
         },
         {
@@ -386,7 +390,7 @@
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountsLogzioFailSafe'))]"
             ],
             "properties": {
-                "publicAccess": "Blob"
+                "publicAccess": "None"
             }
         }
         

@@ -83,7 +83,7 @@ class DataParser {
     var jsonArray = [];
     var validMessage = this._removeLastNewline(data);
     try {
-      var splittedJson = validMessage.split("\n").join(",");
+      var splittedJson = validMessage.split("\n");
       return JSON.parse(`[${splittedJson}]`);
     } catch (e) {
       if (e instanceof TypeError) {
