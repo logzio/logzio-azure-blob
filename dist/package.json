@@ -17,7 +17,8 @@
     "nock": "^11.7.0",
     "path": "^0.12.7",
     "request": "^2.88.0",
-    "@azure/storage-blob": "^12.2.1"
+    "@azure/storage-blob": "^12.2.1",
+    "async-gzip-gunzip": "1.0.1"
   },
   "devDependencies": {},
   "keywords": [],

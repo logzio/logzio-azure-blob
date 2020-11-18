@@ -1,7 +1,26 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "LogzioHost": {
+            "defaultValue": "listener.logz.io",
+            "type": "String"
+        },
+        "LogzioToken": {
+            "type": "String"
+        },
+        "Format": {
+            "defaultValue": "json",
+            "type": "String"
+        },
+        "Buffersize": {
+            "defaultValue": 100,
+            "type": "int"
+        },
+        "Timeout": {
+            "defaultValue": 180000,
+            "type": "int"
+        },
         "BlobStorageAccountName": {
             "defaultValue": "[concat('logzioblob', uniqueString(resourceGroup().id))]",
             "type": "String"
@@ -43,22 +62,11 @@
             "type": "String"
         },
         "Branch": {
-            "defaultValue": "master",
+            "defaultValue": "fix-blob-access",
             "type": "String"
         },
         "LogzioConsumerGroups": {
             "defaultValue": "logzioconsumergroup",
-            "type": "String"
-        },
-        "LogzioHost": {
-            "defaultValue": "listener.logz.io",
-            "type": "String"
-        },
-        "LogzioToken": {
-            "type": "String"
-        },
-        "Format": {
-            "defaultValue": "text",
             "type": "String"
         },
         "AuthorizationRulesLogzioSharedAccessKey": {
@@ -82,7 +90,7 @@
             },
             "name": "[parameters('StorageAccountsFunctionLogsName')]",
             "kind": "Storage",
-            "apiVersion": "2019-04-01",
+            "apiVersion": "2019-06-01",
             "location": "[resourceGroup().location]",
             "properties": {
                 "encryption": {
@@ -107,7 +115,7 @@
             },
             "name": "[parameters('BlobStorageAccountName')]",
             "kind": "StorageV2",
-            "apiVersion": "2019-04-01",
+            "apiVersion": "2019-06-01",
             "location": "[resourceGroup().location]",
             "properties": {
                 "encryption": {
@@ -132,7 +140,7 @@
                 "capacity": 1
             },
             "name": "[parameters('EventHubNamespaceName')]",
-            "apiVersion": "2017-04-01",
+            "apiVersion": "2018-01-01-preview",
             "location": "[resourceGroup().location]",
             "tags": {},
             "scale": null,
@@ -213,7 +221,7 @@
             },
             "kind": "StorageV2",
             "name": "[parameters('storageAccountsLogzioFailSafe')]",
-            "apiVersion": "2019-04-01",
+            "apiVersion": "2019-06-01",
             "location": "[resourceGroup().location]",
             "properties": {
                 "encryption": {
@@ -239,9 +247,9 @@
                 "family": "Y",
                 "capacity": 0
             },
-            "kind": "functionapp",
+            "kind": "serverfarm",
             "name": "[parameters('ServerfarmsLogzioSP')]",
-            "apiVersion": "2016-09-01",
+            "apiVersion": "2020-06-01",
             "location": "[resourceGroup().location]",
             "scale": null,
             "properties": {
@@ -260,7 +268,7 @@
             "type": "Microsoft.Web/sites",
             "kind": "functionapp",
             "name": "[parameters('LogzioSitesFunctionAppName')]",
-            "apiVersion": "2016-08-01",
+            "apiVersion": "2020-06-01",
             "location": "[resourceGroup().location]",
             "scale": null,
             "properties": {
@@ -271,11 +279,11 @@
                 "siteConfig": {
                     "appSettings": [{
                             "name": "FUNCTIONS_EXTENSION_VERSION",
-                            "value": "~1"
+                            "value": "~3"
                         },
                         {
                             "name": "WEBSITE_NODE_DEFAULT_VERSION",
-                            "value": "8.9.4"
+                            "value": "~12"
                         },
                         {
                             "name": "FUNCTIONS_WORKER_RUNTIME",
@@ -291,11 +299,11 @@
                         },
                         {
                             "name": "AzureWebJobsStorage",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('StorageAccountsFunctionLogsName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountsFunctionLogsName')),'2015-05-01-preview').key1)]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('StorageAccountsFunctionLogsName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountsFunctionLogsName')),'2019-06-01').keys[0].value)]"
                         },
                         {
                             "name": "AzureWebJobsDashboard",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('StorageAccountsFunctionLogsName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountsFunctionLogsName')),'2015-05-01-preview').key1)]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('StorageAccountsFunctionLogsName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountsFunctionLogsName')),'2019-06-01').keys[0].value)]"
                         },
                         {
                             "name": "LogzioHost",
@@ -303,7 +311,7 @@
                         },
                         {
                             "name": "BlobConnectionString",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('BlobStorageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('BlobStorageAccountName')),'2015-05-01-preview').key1,';EndpointSuffix=core.windows.net')]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('BlobStorageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('BlobStorageAccountName')),'2019-06-01').keys[0].value,';EndpointSuffix=core.windows.net')]"
                         },
                         {
                             "name": "AzureEventHubLogsConnectionString",
@@ -311,7 +319,11 @@
                         },
                         {
                             "name": "LogsStorageConnectionString",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountsLogzioFailSafe'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountsLogzioFailSafe')),'2015-05-01-preview').key1,';EndpointSuffix=core.windows.net')]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountsLogzioFailSafe'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountsLogzioFailSafe')),'2019-06-01').keys[0].value,';EndpointSuffix=core.windows.net')]"
+                        },
+                        {
+                            "name": "EventHubNamespace",
+                            "value": "[parameters('eventhubs_logs_name')]"
                         },
                         {
                             "name": "LogzioToken",
@@ -329,7 +341,7 @@
                 }
             },
             "resources": [{
-                "apiVersion": "2015-08-01",
+                "apiVersion": "2020-06-01",
                 "name": "web",
                 "type": "sourcecontrols",
                 "dependsOn": [
@@ -363,7 +375,7 @@
         {
           "name": "[parameters('AppInsightsName')]",
           "type": "Microsoft.Insights/components",
-          "apiVersion": "2015-05-01",
+          "apiVersion": "2020-02-02-preview",
           "location": "[resourceGroup().location]",
           "kind": "web",
           "properties": {

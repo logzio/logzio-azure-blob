@@ -2,22 +2,23 @@ const logger = require("logzio-nodejs");
 const DataParser = require("./data-parser");
 const { ContainerClient } = require('@azure/storage-blob');
 const zlib = require("zlib");
-const asyncGunzip = require('async-gzip-gunzip').asyncGunzip
-
-const event = 0;
-function containerIndex(splitUrl){
+// const asyncGunzip = require('async-gzip-gunzip').asyncGunzip
+const containerIndex = (splitUrl) => {
  return splitUrl.length-2;
 };
-function blobIndex(splitUrl){
+const blobIndex = (splitUrl) => {
   return splitUrl.length-1;
  };
+const extractMessageFromArray = (message) => {
+   return message[0];
+ }
 const fileTypes = {
   text: "text",
   json: "json",
   csv: "csv"
 }
 const gzip = "gz";
-function getCallBackFunction(context) {
+const getCallBackFunction = (context) => {
   return function callback(err) {
     if (err) {
       context.err(`logzio-logger error: ${err}`, err);
@@ -25,6 +26,7 @@ function getCallBackFunction(context) {
     context.done();
   };
 }
+
 const streamToStringAsync = async (readableStream) => {
   return new Promise((resolve, reject) => {
       const chunks = [];
@@ -41,7 +43,8 @@ const getParserOptions = () => ({
   token: process.env.LogzioToken,
   host: process.env.LogzioHost,
 });
-function sendData(format, data, context) {
+
+const sendData = (format, data, context) =>{
   const callBackFunction = getCallBackFunction(context);
   const dataParser = new DataParser({
     internalLogger: context
@@ -68,13 +71,13 @@ function sendData(format, data, context) {
   logzioShipper.sendAndClose(callBackFunction);
 }
 
-function unzipData(data, callback){
+const unzipData = (data, callback) =>{
   zlib.gunzip(data, function(err, dezipped) {
     callback(dezipped.toString());
   });
 }
 
-function extractFileType(url, isCompressed){
+const extractFileType = (url, isCompressed) => {
   const urlArray = url.split(".");
   if (isCompressed){
     urlArray.pop();
@@ -90,7 +93,7 @@ function extractFileType(url, isCompressed){
   return format;
 }
 
-async function getBlob(splitUrlArr){
+const getBlob = async(splitUrlArr) => {
   const containerName = splitUrlArr[containerIndex(splitUrlArr)];
   const blobName = splitUrlArr[blobIndex(splitUrlArr)];
   const blobConnectionString = process.env.BlobConnectionString;
@@ -102,7 +105,7 @@ async function getBlob(splitUrlArr){
 }
 
 
-async function getAndSendData(url, context){
+const getAndSendData = async (url, context) =>{
     let gunzipped = null;
     const isCompressed =  url.endsWith(gzip); 
     const format = extractFileType(url, isCompressed); 
@@ -120,10 +123,10 @@ async function getAndSendData(url, context){
     }
 }
 
-function processEventHubMessages(context, eventHubMessages){
+const processEventHubMessages = (context, eventHubMessages) => {
   console.log(`Starting Logz.io Azure function with logs`);
   eventHubMessages.forEach(message => {
-    const url = message[event]["data"]["url"];
+    const url = extractMessageFromArray(message)["data"]["url"];
     getAndSendData(url, context);
   });
 }

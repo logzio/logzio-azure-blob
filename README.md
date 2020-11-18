@@ -31,24 +31,19 @@ You'll be taken to Azure,
 where you'll configure the resources to be deployed.
 Make sure to use the settings shown below.
 
-#### In the BASICS section
-
 | Parameter | Description |
 |---|---|
 | Resource group | Select your existing resource group, and then click **OK**. |
 | Location | Select the same region as the Azure services that will stream data to this Blob Storage. |
-
-#### In the SETTINGS section
-
-| Parameter | Description |
-|---|---|
 | Logs listener host | Use the listener URL specific to the region of your Logz.io account. You can look it up [here](https://docs.logz.io/user-guide/accounts/account-region.html). |
 | Logs account token | Add the [log shipping token](https://app.logz.io/#/dashboard/settings/general) for the relevant Logz.io account. This is the account you want to ship to.  |
-| Format (Default: text) | Select one of the supported parsing formats: json/csv/text  |
-| Blob Storage Connection String | Insert your storage account connection string, for more information [click here](#connection-string)  |
+| Format (Default: text) | Select one of the supported parsing formats: text/json/csv.  |
+| Blob Storage Connection String | Insert your storage account connection string, for more information [click here](#connection-string).  |
+| Buffersize (Default: 100) | The maximum number of messages the logger will accumulate before sending them all as a bulk.  |
+| Timeout (Default: 180,000 = 3 minutes) | The read/write/connection timeout in *milliseconds*.  |
 
 At the bottom of the page, agree to the terms and conditions. 
-Then click **Purchase** to deploy. Deployment can take a few minutes.
+Then click **Purchase** to deploy.
 
 Deployment can take a few minutes.
 
@@ -104,7 +99,7 @@ If you still don’t see your logs, see [log shipping troubleshooting](https://d
 
 <div class="connection-string">
 On your storage account go to 'Access keys' tab. Copy the 'Connection string' of key1.
-#screenshots for connection string
+![Get connection string](images/storage-account-settings.png)
 </div>
 
 </div>
@@ -131,19 +126,16 @@ Make sure to use the settings shown below.
 
 | Parameter | Description |
 |---|---|
-| Resource group | Click **Create new**. Give a meaningful **Name**, such as "logziobBlobStorageIntegration", and then click **OK**. |
+| Resource group | Select your existing resource group, and then click **OK**. |
 | Location | Select the same region as the Azure services that will stream data to this Blob Storage. |
-
-#### In the SETTINGS section
-
-| Parameter | Description |
-|---|---|
 | Logs listener host | Use the listener URL specific to the region of your Logz.io account. You can look it up [here](https://docs.logz.io/user-guide/accounts/account-region.html). |
 | Logs account token | Add the [log shipping token](https://app.logz.io/#/dashboard/settings/general) for the relevant Logz.io account. This is the account you want to ship to.  |
-| Format (Default: text) | Select one of the supported parsing formats: json/csv/text  |
+| Format (Default: text) | Select one of the supported parsing formats: text/json/csv  |
+| Buffersize (Default: 100) | The maximum number of messages the logger will accumulate before sending them all as a bulk  |
+| Timeout (Default: 180,000 = 3 minutes) | The read/write/connection timeout in *milliseconds*.  |
 
-At the bottom of the page, agree to the terms and conditions.
-Then click **Purchase** to deploy. Deployment can take a few minutes.
+At the bottom of the page, agree to the terms and conditions. 
+Then click **Purchase** to deploy. 
 
 Deployment can take a few minutes.
 
