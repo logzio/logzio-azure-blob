@@ -13,6 +13,14 @@
             "defaultValue": "text",
             "type": "String"
         },
+        "Buffersize": {
+            "defaultValue": 100,
+            "type": "int"
+        },
+        "Timeout": {
+            "defaultValue": 180000,
+            "type": "int"
+        },
         "BlobStorageConnectionString": {
             "type": "String"
         },
@@ -238,6 +246,10 @@
                             "value": "node"
                         },
                         {
+                            "name": "FUNCTIONS_WORKER_PROCESS_COUNT",
+                            "value": "10"
+                        },                        
+                        {
                             "name": "FUNCTION_APP_EDIT_MODE",
                             "value": "readwrite"
                         },
@@ -259,7 +271,7 @@
                         },
                         {
                             "name": "BlobConnectionString",
-                            "value": "parameters('BlobStorageConnectionString')"
+                            "value": "[parameters('BlobStorageConnectionString')]"
                         },
                         {
                             "name": "AzureEventHubLogsConnectionString",
@@ -268,6 +280,10 @@
                         {
                             "name": "LogsStorageConnectionString",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountsLogzioFailSafe'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountsLogzioFailSafe')),'2019-06-01').keys[0].value,';EndpointSuffix=core.windows.net')]"
+                        },
+                        {
+                            "name": "EventHubNamespace",
+                            "value": "[parameters('EventHubNamespaceName')]"
                         },
                         {
                             "name": "LogzioToken",
@@ -335,7 +351,7 @@
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountsLogzioFailSafe'))]"
             ],
             "properties": {
-                "publicAccess": "Blob"
+                "publicAccess": "None"
             }
         }
     ]

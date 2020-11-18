@@ -62,7 +62,7 @@
             "type": "String"
         },
         "Branch": {
-            "defaultValue": "fix-blob-access",
+            "defaultValue": "master",
             "type": "String"
         },
         "LogzioConsumerGroups": {
@@ -290,6 +290,10 @@
                             "value": "node"
                         },
                         {
+                            "name": "FUNCTIONS_WORKER_PROCESS_COUNT",
+                            "value": "10"
+                        },  
+                        {
                             "name": "FUNCTION_APP_EDIT_MODE",
                             "value": "readwrite"
                         },
@@ -323,7 +327,7 @@
                         },
                         {
                             "name": "EventHubNamespace",
-                            "value": "[parameters('eventhubs_logs_name')]"
+                            "value": "[parameters('EventHubNamespaceName')]"
                         },
                         {
                             "name": "LogzioToken",
