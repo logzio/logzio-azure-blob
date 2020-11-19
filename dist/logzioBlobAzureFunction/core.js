@@ -10,6 +10,13 @@ const fileTypes = {
 }
 const gzip = "gz";
 
+function isGzip(buf){
+	if (!buf || buf.length < 3) {
+		return false;
+	}
+	return buf[0] === 0x1F && buf[1] === 0x8B && buf[2] === 0x08;
+};
+
 function getCallBackFunction(context) {
   return function callback(err, bulk) {
     if (err) {
@@ -72,7 +79,7 @@ function getData(url, callback) {
   const isCompressed =  url.endsWith(gzip); 
   const format = extractFileType(url, isCompressed);    
   request(url, { encoding: null }, function(err, response, body) {
-    if (isCompressed) {
+    if (isGzip(body)) {
       zlib.gunzip(body, function(err, dezipped) {
         callback(dezipped.toString(), format);
       });
