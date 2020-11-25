@@ -12,7 +12,7 @@ const LogTypes = {
   json: "json"
  };
 
-class DataParser {
+ class DataParser {
   constructor(internalLogger = global.console) {
     this._parsing = false;
     this._internalLogger = internalLogger;
@@ -83,15 +83,15 @@ class DataParser {
     var jsonArray = [];
     var validMessage = this._removeLastNewline(data);
     try {
-      var splittedJson = validMessage.split("\n").join(",");
+      var splittedJson = validMessage.split("\n");
       return JSON.parse(`[${splittedJson}]`);
     } catch (e) {
       if (e instanceof TypeError) {
         return [validMessage];
       }
       if (e instanceof SyntaxError) {
-        throw new Error(
-          "Your data is invalid, please ensure new lines seperates logs only."
+        throw new SyntaxError(
+          "Your data is invalid, please ensure only new lines seperates."
         );
       }
     }
