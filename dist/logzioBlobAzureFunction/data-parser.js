@@ -12,13 +12,13 @@ const LogTypes = {
   json: "json"
  };
 
-class DataParser {
+ class DataParser {
   constructor(internalLogger = global.console) {
     this._parsing = false;
     this._internalLogger = internalLogger;
   }
 
-  parseEventHubLogMessagesToArray(data, logType) {
+  parseEventHubLogMessagesToArray(data, logType, context) {
     var logsArray = [];
     if (this._parsing === true)
       throw Error("already parsing, create a new DataParser");
@@ -28,7 +28,7 @@ class DataParser {
         logsArray = this._parseCSVtoLogs(data);
         break;
       case LogTypes.json:
-        logsArray = this._parseJsonToLogs(data);
+        logsArray = this._parseJsonToLogs(data, context);
         break;
       default:
         logsArray = data.split("\n");
@@ -63,9 +63,9 @@ class DataParser {
 
   _normalizeData(data) {
     if (data.time) {
-      delete Object.assign(data, {
-        "@timestamp": data.time
-      }).time;
+    //   delete Object.assign(data, {
+    //     "@timestamp": data.time
+    //   }).time;
     }
     return this._removeEmpty(data);
   }
@@ -79,7 +79,7 @@ class DataParser {
     return data;
   }
 
-  _parseJsonToLogs(data) {
+  _parseJsonToLogs(data, context) {
     var jsonArray = [];
     var validMessage = this._removeLastNewline(data);
     try {
@@ -90,8 +90,8 @@ class DataParser {
         return [validMessage];
       }
       if (e instanceof SyntaxError) {
-        throw new Error(
-          "Your data is invalid, please ensure new lines seperates logs only."
+        throw new SyntaxError(
+          "Your data is invalid, please ensure only new lines seperates."
         );
       }
     }

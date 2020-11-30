@@ -4,11 +4,25 @@ Logz.io provides an automated deployment process to simplify the process of ship
 This integration forwards logs from your Azure Blob Storage	
 to your Logz.io account.
 
+![Integration-architecture](images/logzio-blob-Diagram.png)
+
+
 <!-- tabContainer:start -->
 <div class="branching-container">
 
+## Deployment options:
+
 * [Use your existing blob storage account](#existing-blob-config)
 * [Create a new blob storage account](#new-blob-config)
+
+These deployments will create the following services:
+* Serveless Function App
+* Application Insights
+* App Service Plan
+* Event Hubs Namspace
+* Event Grid System Topic
+* Function's logs Storage Account
+* Blob Storage Account (will be created only if you choose option 2)
 
 <!-- tab:start -->
 <div id="existing-blob-config">
@@ -33,12 +47,12 @@ Make sure to use the settings shown below.
 
 | Parameter | Description |
 |---|---|
-| Resource group | Select your existing resource group, and then click **OK**. |
-| Location | Select the same region as the Azure services that will stream data to this Blob Storage. |
-| Logs listener host | Use the listener URL specific to the region of your Logz.io account. You can look it up [here](https://docs.logz.io/user-guide/accounts/account-region.html). |
-| Logs account token | Add the [log shipping token](https://app.logz.io/#/dashboard/settings/general) for the relevant Logz.io account. This is the account you want to ship to.  |
+| Resource group* | Select your existing resource group, and then click **OK**. |
+| Region* | Select the same region as the Azure services that will stream data to this Blob Storage. |
+| Logzio host* | Use the listener URL specific to the region of your Logz.io account. You can look it up [here](https://docs.logz.io/user-guide/accounts/account-region.html). |
+| Logzio token* | Add the [log shipping token](https://app.logz.io/#/dashboard/settings/general) for the relevant Logz.io account. This is the account you want to ship to.  |
 | Format (Default: text) | Select one of the supported parsing formats: text/json/csv.  |
-| Blob Storage Connection String | Insert your storage account connection string, for more information [click here](#connection-string).  |
+| Blob Storage Account Name | Insert the name of the storage account that contains the logs.  |
 | Buffersize (Default: 100) | The maximum number of messages the logger will accumulate before sending them all as a bulk.  |
 | Timeout (Default: 180,000 = 3 minutes) | The read/write/connection timeout in *milliseconds*.  |
 
