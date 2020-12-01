@@ -1,6 +1,6 @@
 {
   "name": "logzio-azure-blob",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "main": "index.js",
   "scripts": {
     "test": "jest",
@@ -18,7 +18,8 @@
     "path": "^0.12.7",
     "request": "^2.88.0",
     "@azure/storage-blob": "^12.2.1",
-    "async-gzip-gunzip": "1.0.1"
+    "async-gzip-gunzip": "^1.0.1",
+    "is-gzip" : "^2.0.0"
   },
   "devDependencies": {},
   "keywords": [],

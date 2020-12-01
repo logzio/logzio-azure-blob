@@ -1,46 +1,33 @@
 const logger = require("logzio-nodejs");
 const DataParser = require("./data-parser");
 const { ContainerClient } = require('@azure/storage-blob');
-const zlib = require("zlib");
 const isGzip = require('is-gzip');
+const asyncGunzip = require('async-gzip-gunzip').asyncGunzip
+const gzip = "gz";
 
 const lastIndex = (url) => {
   return url.lastIndexOf('/');
 }
 
-// const asyncGunzip = require('async-gzip-gunzip').asyncGunzip
-
 const extractMessageFromArray = (message) => {
    return message[0];
- }
+}
+
 const fileTypes = {
   text: "text",
   json: "json",
   csv: "csv"
 }
-const gzip = "gz";
-// const jsonSyntaxError = "Your data is invalid, please ensure only new lines seperates logs in ";
+
 const getCallBackFunction = (context) => {
   return function callback(err) {
     if (err) {
-      context.err(`logzio-logger error: ${err}`, err);
+      context.error(`logzio-logger error: ${err}`);
     }
     context.done();
   };
 }
 
-const streamToStringAsync = async (readableStream) => {
-  return new Promise((resolve, reject) => {
-      const chunks = [];
-      readableStream.on("data", (data) => {
-      chunks.push(data.toString());
-      });
-      readableStream.on("end", () => {
-      resolve(chunks.join(""));
-      });
-      readableStream.on("error", reject);
-  });
-};
 const getParserOptions = () => ({
   token: process.env.LogzioToken,
   host: process.env.LogzioHost,
@@ -79,20 +66,13 @@ const sendData = (format, fileName, data, context) =>{
   logzioShipper.sendAndClose(callBackFunction);
 }
 
-const unzipData = (data, callback) =>{
-  zlib.gunzip(data, function(err, dezipped) {
-    callback(dezipped.toString());
-  });
-}
-
 const extractFileType = (url, isCompressed) => {
   const urlArray = url.split(".");
   if (isCompressed){
     urlArray.pop();
   }
   const fileType  = urlArray.pop();
-//   const format = process.env.Format;
-    const format = "json";
+  const format = process.env.Format;
   if (fileType === fileTypes.csv){
     return fileTypes.csv;
   }
@@ -107,10 +87,10 @@ const getBlob = async(subUrl, blobName) => {
   const blobConnectionString = process.env.BlobConnectionString;
   const containerClient = new ContainerClient(blobConnectionString, containerName);
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-  const downloadBlockBlobResponse = await blockBlobClient.download(0);
-  const data = await streamToStringAsync(downloadBlockBlobResponse.readableStreamBody);
-  return data;
+  const downloadBlockBlobPromise = await blockBlobClient.downloadToBuffer();
+  return downloadBlockBlobPromise;
 }
+
 
 
 const getAndSendData = async (url, context) =>{
@@ -121,11 +101,10 @@ const getAndSendData = async (url, context) =>{
     const fileName = url.substring(lastIndex(url) + 1);
     const data = await getBlob(substringUrl, fileName);
     if(isGzip(data)){
-      gunzipped = asyncGunzip(data);
+      gunzipped = await asyncGunzip(data);
     }
-    else{
-      sendData(format, fileName, gunzipped || data, context);
-    }
+    const blobData = gunzipped || data;
+    sendData(format, fileName, blobData.toString(), context);
 }
 
 const processEventHubMessages = (context, eventHubMessages) => {
@@ -135,6 +114,7 @@ const processEventHubMessages = (context, eventHubMessages) => {
     getAndSendData(url, context);
   });
 }
+
 module.exports = {
   processEventHubMessages: processEventHubMessages,
   sendData: sendData

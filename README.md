@@ -22,7 +22,7 @@ These deployments will create the following services:
 * Event Hubs Namspace
 * Event Grid System Topic
 * Function's logs Storage Account
-* Blob Storage Account (will be created only if you choose option 2)
+* Blob Storage Account (will be created only if you choose the second deploy option)
 
 <!-- tab:start -->
 <div id="existing-blob-config">
@@ -55,6 +55,8 @@ Make sure to use the settings shown below.
 | Blob Storage Account Name | Insert the name of the storage account that contains the logs.  |
 | Buffersize (Default: 100) | The maximum number of messages the logger will accumulate before sending them all as a bulk.  |
 | Timeout (Default: 180,000 = 3 minutes) | The read/write/connection timeout in *milliseconds*.  |
+
+*Required fields  
 
 At the bottom of the page, agree to the terms and conditions. 
 Then click **Purchase** to deploy.
