@@ -35,7 +35,7 @@ Double-check your [_Storage accounts_](https://portal.azure.com/#blade/HubsExten
 
 <div class="tasklist">
 
-### 1. Configure an automated deployment
+## Configure an automated deployment
 
 👇 Click this button to start the automated deployment.
 
@@ -63,18 +63,7 @@ Then click **Purchase** to deploy.
 
 Deployment can take a few minutes.
 
-### 2. Add a blob container
-In the
-[_Storage accounts_](https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.Storage%2FStorageAccounts)
-page, select the relevant StorageV2 account.
-
-Click the **Containers** card to open it.
-
-* If you don't yet have a blob container, build one now.
-    
-    Click **+ Container** in the toolbar. Give your container a meaningful **Name**, and select **Private** from the **Public access level** list. Press **OK** to create your container.
-
-### 3. Check Logz.io for your logs
+## Check Logz.io for your logs
 
 Give your logs some time to get from your system to ours, and then open [Kibana](https://app.logz.io/#/dashboard/kibana/discover?). 
 Please note that only logs sent from this point on would be sent and appear under the type `blobStorage`.
@@ -93,7 +82,7 @@ If you still don’t see your logs, see [log shipping troubleshooting](https://d
 
 <div class="tasklist">
 
-### 1. Configure an automated deployment
+## Configure an automated deployment
 
 👇 Click this button to start the automated deployment.
 
@@ -120,7 +109,7 @@ Then click **Purchase** to deploy.
 
 Deployment can take a few minutes.
 
-### 2. Check Logz.io for your logs
+## Check Logz.io for your logs
 
 Give your logs some time to get from your system to ours, and then open [Kibana](https://app.logz.io/#/dashboard/kibana/discover?). 
 Please note that only logs sent from this point on would be sent and appear under the type `blobStorage`.
