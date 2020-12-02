@@ -22,7 +22,7 @@ const fileTypes = {
 const getCallBackFunction = (context) => {
   return function callback(err) {
     if (err) {
-      context.error(`logzio-logger error: ${err}`);
+      context.log.error(`logzio-logger error: ${err}`);
     }
     context.done();
   };
@@ -59,7 +59,7 @@ const sendData = (format, fileName, data, context) =>{
   catch(e){
     if (e instanceof SyntaxError) {
         const jsonSyntaxError = "Your data is invalid, please ensure only new lines seperates logs in: " + fileName;
-        context.error(jsonSyntaxError, fileName);
+        context.log.error(jsonSyntaxError, fileName);
         logzioShipper.log(jsonSyntaxError, fileName);
       }
   }

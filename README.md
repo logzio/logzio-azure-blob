@@ -74,48 +74,13 @@ Click the **Containers** card to open it.
     
     Click **+ Container** in the toolbar. Give your container a meaningful **Name**, and select **Private** from the **Public access level** list. Press **OK** to create your container.
 
-### 3. Build an event subscription
-
-In your storage account, in the left menu, click **Events**.
-
-Click **+ Event Subscription** in the toolbar.
-
-#### In "EVENT SUBSCRIPTION DETAILS"
-
-| Parameter | Description |
-|---|---|
-| Name | Give a meaningful name. |
-| Event Schema | Select **Event Grid Schema** |
-
-#### In "EVENT TYPES"
-
-Give the event subscription a meaningful **Name**.
-
-| Parameter | Description |
-|---|---|
-| Filter to Event Types | Select **Blob Created** only, and clear the remaining check boxes. |
-
-#### In "ENDPOINT DETAILS"
-
-| Parameter | Description |
-|---|---|
-| Endpoint Type | Select **Event Hubs**. |
-| Endpoint | Click **Select an endpoint**, then select your resource group. |
-
-Click **Create** to continue.
-
-### 4. Check Logz.io for your logs
+### 3. Check Logz.io for your logs
 
 Give your logs some time to get from your system to ours, and then open [Kibana](https://app.logz.io/#/dashboard/kibana/discover?). 
-Any logs sent from this point on should appear under the type `blobStorage`.
+Please note that only logs sent from this point on would be sent and appear under the type `blobStorage`.
 
 If you still don’t see your logs, see [log shipping troubleshooting](https://docs.logz.io/user-guide/log-shipping/log-shipping-troubleshooting.html).
 
-</div>
-
-<div class="connection-string">
-On your storage account go to 'Access keys' tab. Copy the 'Connection string' of key1.
-![Get connection string](images/storage-account-settings.png)
 </div>
 
 </div>
@@ -158,7 +123,7 @@ Deployment can take a few minutes.
 ### 2. Check Logz.io for your logs
 
 Give your logs some time to get from your system to ours, and then open [Kibana](https://app.logz.io/#/dashboard/kibana/discover?). 
-Any logs sent from this point on should appear under the type `blobStorage`.
+Please note that only logs sent from this point on would be sent and appear under the type `blobStorage`.
 
 If you still don’t see your logs, see [log shipping troubleshooting](https://docs.logz.io/user-guide/log-shipping/log-shipping-troubleshooting.html).
 
