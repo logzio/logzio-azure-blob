@@ -6,7 +6,7 @@
             "defaultValue": "listener.logz.io",
             "type": "String"
         },
-        "LogzioToken": {
+        "LogShippingToken": {
             "type": "String"
         },
         "BlobStorageAccountName": {
@@ -34,7 +34,7 @@
         "Eventhub_resourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('EventHubNamespaceName'), variables('EventHubBlobName'))]",
         "EventGridSubscription": "[concat('LogzioGridSubscription', uniqueString(resourceGroup().id))]",
         "RepoURL": "https://github.com/logzio/logzio-azure-blob.git",
-        "Branch": "fix-blob-access",
+        "Branch": "master",
         "LogzioConsumerGroups": "logzioconsumergroup",
         "AuthorizationRulesLogzioSharedAccessKey": "LogzioLSharedAccessKey",
         "AppInsightsName": "[concat('logzioInsight', uniqueString(resourceGroup().id))]"
@@ -232,7 +232,7 @@
                         },
                         {
                             "name": "LogzioToken",
-                            "value": "[parameters('LogzioToken')]"
+                            "value": "[parameters('LogShippingToken')]"
                         },
                         {
                             "name": "Format",

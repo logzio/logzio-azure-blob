@@ -27,7 +27,7 @@ These deployments will create the following services:
 <!-- tab:start -->
 <div id="existing-blob-config">
 
-## Use your existing blob storage account
+# Use your existing blob storage account
 
 **Before you begin, you'll need**:
 a blob storage account of the type **StorageV2 (general purpose v2)** . If your existing blob storage account is of any other kind, it will NOT work. Instead, follow the process to set up a new blob storage account.
@@ -70,6 +70,8 @@ Please note that only logs sent from this point on would be sent and appear unde
 
 If you still don’t see your logs, see [log shipping troubleshooting](https://docs.logz.io/user-guide/log-shipping/log-shipping-troubleshooting.html).
 
+For information about working with your parameters after deployment press [here](#parameters-after-deploy).
+
 </div>
 
 </div>
@@ -78,7 +80,7 @@ If you still don’t see your logs, see [log shipping troubleshooting](https://d
 <!-- tab:start -->
 <div id="new-blob-config">
 
-## Set up a new blob storage account
+# Set up a new blob storage account
 
 <div class="tasklist">
 
@@ -120,6 +122,18 @@ If you still don’t see your logs, see [log shipping troubleshooting](https://d
 
 </div>
 <!-- tab:end -->
+<div id="parameters-after-deploy">
+
+### Working with your parameters after deployment
+
+If you wish to change parameters values after the deployment, go to your function app page, then on the left menu press the 'Configuration' tab.
+You'll have the option to edit the following values:
+* Shipper's configurations such as LogzioHost, LogzioToken, Buffersize, Timeout.
+* FUNCTIONS_WORKER_PROCESS_COUNT - maximum of 10, for more information press [here](https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings#functions_worker_process_count).
+* ParseEmptyField - Parse logs with invalid empty fields. **Please note using this option may slow the shipper's perfomance.**
+
+![Function's configuration](images/configuration-settings.png)
+
 
 </div>
 <!-- tabContainer:end -->
