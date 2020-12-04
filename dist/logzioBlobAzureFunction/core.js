@@ -91,8 +91,6 @@ const getBlob = async(subUrl, blobName) => {
   return downloadBlockBlobPromise;
 }
 
-
-
 const getAndSendData = async (url, context) =>{
     let gunzipped = null;
     const isCompressed =  url.endsWith(gzip); 
