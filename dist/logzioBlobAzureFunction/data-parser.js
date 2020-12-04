@@ -28,7 +28,7 @@ const LogTypes = {
         logsArray = this._parseCSVtoLogs(data);
         break;
       case LogTypes.json:
-        logsArray = this._parseJsonToLogs(data, context);
+        logsArray = this._parseJsonToLogs(data);
         break;
       default:
         logsArray = data.split("\n");
@@ -63,9 +63,9 @@ const LogTypes = {
 
   _normalizeData(data) {
     if (data.time) {
-    //   delete Object.assign(data, {
-    //     "@timestamp": data.time
-    //   }).time;
+      delete Object.assign(data, {
+        "@timestamp": data.time
+      }).time;
     }
     return this._removeEmpty(data);
   }
@@ -79,11 +79,12 @@ const LogTypes = {
     return data;
   }
 
-  _parseJsonToLogs(data, context) {
+  _parseJsonToLogs(data) {
     var jsonArray = [];
     var validMessage = this._removeLastNewline(data);
     try {
       var splittedJson = validMessage.split("\n");
+      throw new Error("can't parse JSON")
       return JSON.parse(`[${splittedJson}]`);
     } catch (e) {
       if (e instanceof TypeError) {
@@ -92,6 +93,11 @@ const LogTypes = {
       if (e instanceof SyntaxError) {
         throw new SyntaxError(
           "Your data is invalid, please ensure only new lines seperates."
+        );
+      }
+      else {
+        throw new Error(
+          "Could not parse JSON."
         );
       }
     }

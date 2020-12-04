@@ -57,11 +57,15 @@ const sendData = (format, fileName, data, context) =>{
     });
   }
   catch(e){
+    let errorMessage;
     if (e instanceof SyntaxError) {
-        const jsonSyntaxError = "Your data is invalid, please ensure only new lines seperates logs in: " + fileName;
-        context.log.error(jsonSyntaxError, fileName);
-        logzioShipper.log(jsonSyntaxError, fileName);
-      }
+      errorMessage = "Your data is invalid, please ensure only new lines seperates logs in: " + fileName;
+    }
+    else{
+      errorMessage = "The file " + fileName + " was not sent due to " + e;
+    }
+    context.error(errorMessage, fileName);
+    logzioShipper.log(errorMessage, fileName);
   }
   logzioShipper.sendAndClose(callBackFunction);
 }
@@ -98,7 +102,7 @@ const getAndSendData = async (url, context) =>{
     const substringUrl = url.substring(0, url.lastIndexOf('/'));
     const fileName = url.substring(lastIndex(url) + 1);
     const data = await getBlob(substringUrl, fileName);
-    if(isGzip(data)){
+    if(isGzip(data.slice(0, 3))){
       gunzipped = await asyncGunzip(data);
     }
     const blobData = gunzipped || data;
