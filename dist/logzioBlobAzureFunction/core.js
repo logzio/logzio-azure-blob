@@ -20,8 +20,7 @@ function isGzip(buf){
 function getCallBackFunction(context) {
   return function callback(err, bulk) {
     if (err) {
-      context.err(`logzio-logger error: ${err}`, err);
-      context.bindings.outputBlob = bulk;
+      context.log.error(`logzio-logger error: ${err}`, err);
     }
     context.done();
   };
@@ -32,30 +31,37 @@ const getParserOptions = () => ({
   host: process.env.LogzioHost,
 });
 
-function sendData(format, data, context) {
+const sendData = (format, fileName, data, context) =>{
   const callBackFunction = getCallBackFunction(context);
   const dataParser = new DataParser({
     internalLogger: context
   });
   const { host, token } = getParserOptions();
-  const parseMessagesArray = dataParser.parseEventHubLogMessagesToArray(
-    data,
-    format
-  );
   const logzioShipper = logger.createLogger({
-    token: token,
-    host: host,
-    type: "blobStorage",
-    protocol: "https",
-    internalLogger: context,
-    compress: true,
-    debug: true,
-    callback: callBackFunction
-  });
-  context.log(`About to send ${parseMessagesArray.length} logs...`);
-  parseMessagesArray.forEach(log => {
-    logzioShipper.log(log);
-  });
+        token: token,
+        host: host,
+        type: "blobStorage",
+        protocol: "https",
+        internalLogger: context,
+        compress: true,
+        debug: true,
+        callback: callBackFunction
+    });
+  try{
+   const parsedMessagesArray = dataParser.parseEventHubLogMessagesToArray(data, format);
+    context.log(`About to send ${parsedMessagesArray.length} logs...`);
+    parsedMessagesArray.forEach(log => {
+        logzioShipper.log(log);
+    });
+  }
+  catch(e){
+    if (e instanceof SyntaxError) {
+        const jsonSyntaxError = "Your data is invalid, please ensure only new lines seperates logs in: " + fileName;
+        context.log.error(jsonSyntaxError);
+        logzioShipper.log(jsonSyntaxError);
+      }
+  }
+
   logzioShipper.sendAndClose(callBackFunction);
 }
 
@@ -94,10 +100,13 @@ function processEventHubMessages(context, eventHubMessages) {
   eventHubMessages.forEach(message => {
     const url = message[event]["data"]["url"];
     getData(url, function(data, format) {
-      sendData(format, data, context);
+      const fileindex = url.lastIndexOf('/');
+      const fileName = url.substring(fileindex + 1);
+      sendData(format, fileName, data, context);
     });
   });
 }
+
 
 module.exports = {
   processEventHubMessages: processEventHubMessages,
