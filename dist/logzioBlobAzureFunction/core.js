@@ -64,8 +64,8 @@ const sendData = (format, fileName, data, context) =>{
     else{
       errorMessage = "The file " + fileName + " was not sent due to " + e;
     }
-    context.log.error(errorMessage, fileName);
-    logzioShipper.log(errorMessage, fileName);
+    context.log.error(errorMessage);
+    logzioShipper.log(errorMessage);
   }
   logzioShipper.sendAndClose(callBackFunction);
 }

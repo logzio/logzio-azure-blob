@@ -83,14 +83,13 @@ const LogTypes = {
     var validMessage = this._removeLastNewline(data);
     try {
       var splittedJson = validMessage.split("\n");
-      // console.log(splittedJson);
       return JSON.parse(`[${splittedJson}]`);
     } catch (e) {
       if (e instanceof TypeError) {
         return [validMessage];
       }
       if (e instanceof SyntaxError) {
-        return JSON.stringify(data);
+        throw new SyntaxError(e);
       }
       else{
         throw new Error(e);
