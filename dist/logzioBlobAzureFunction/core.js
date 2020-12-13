@@ -50,7 +50,7 @@ const sendData = (format, fileName, data, context) =>{
         callback: callBackFunction
     });
   try{
-   const parsedMessagesArray = dataParser.parseEventHubLogMessagesToArray(data, format, context);
+   const parsedMessagesArray = dataParser.parseEventHubLogMessagesToArray(data, format);
     context.log(`About to send ${parsedMessagesArray.length} logs...`);
     parsedMessagesArray.forEach(log => {
         logzioShipper.log(log);
@@ -64,7 +64,7 @@ const sendData = (format, fileName, data, context) =>{
     else{
       errorMessage = "The file " + fileName + " was not sent due to " + e;
     }
-    context.error(errorMessage, fileName);
+    context.log.error(errorMessage, fileName);
     logzioShipper.log(errorMessage, fileName);
   }
   logzioShipper.sendAndClose(callBackFunction);
