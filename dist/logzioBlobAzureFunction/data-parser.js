@@ -18,7 +18,7 @@ const LogTypes = {
     this._internalLogger = internalLogger;
   }
 
-  parseEventHubLogMessagesToArray(data, logType, context) {
+  parseEventHubLogMessagesToArray(data, logType) {
     var logsArray = [];
     if (this._parsing === true)
       throw Error("already parsing, create a new DataParser");
@@ -80,28 +80,22 @@ const LogTypes = {
   }
 
   _parseJsonToLogs(data) {
-    var jsonArray = [];
     var validMessage = this._removeLastNewline(data);
     try {
       var splittedJson = validMessage.split("\n");
-      throw new Error("can't parse JSON")
+      // console.log(splittedJson);
       return JSON.parse(`[${splittedJson}]`);
     } catch (e) {
       if (e instanceof TypeError) {
         return [validMessage];
       }
       if (e instanceof SyntaxError) {
-        throw new SyntaxError(
-          "Your data is invalid, please ensure only new lines seperates."
-        );
+        return JSON.stringify(data);
       }
-      else {
-        throw new Error(
-          "Could not parse JSON."
-        );
+      else{
+        throw new Error(e);
       }
     }
-    return jsonArray;
   }
 
   _parseCSVtoLogs(data) {
