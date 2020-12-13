@@ -10,8 +10,12 @@
             "type": "String"
         },
         "Format": {
-            "defaultValue": "text",
-            "type": "String"
+            "type": "String",
+            "allowedValues": [
+                "text",
+                "json",
+                "csv"
+            ]
         },
         "Buffersize": {
             "defaultValue": 100,
@@ -241,7 +245,7 @@
                         },
                         {
                             "name": "FUNCTIONS_WORKER_PROCESS_COUNT",
-                            "value": "12"
+                            "value": "6"
                         },
                         {
                             "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
