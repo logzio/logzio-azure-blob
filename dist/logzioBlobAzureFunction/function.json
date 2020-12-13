@@ -4,7 +4,7 @@
       "type": "eventHubTrigger",
       "name": "eventHubMessages",
       "direction": "in",
-      "path": "logzioeventhub",
+      "eventHubName": "logzioeventhub",
       "connection": "AzureEventHubLogsConnectionString",
       "cardinality": "many",
       "consumerGroup": "logzioconsumergroup"
