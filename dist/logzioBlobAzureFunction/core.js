@@ -86,8 +86,13 @@ const extractFileType = (url, isCompressed) => {
   return format;
 }
 
+const getFilePath = (urlStr) => {
+  const indexBeforeContainer = urlStr.indexOf(".net");
+  return urlStr.substring(indexBeforeContainer + 5);
+}
+
 const getBlob = async(subUrl, blobName) => {
-  const containerName = subUrl.substring(lastIndex(subUrl) + 1);
+  const containerName = getFilePath(subUrl);
   const blobConnectionString = process.env.BlobConnectionString;
   const containerClient = new ContainerClient(blobConnectionString, containerName);
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
@@ -97,7 +102,7 @@ const getBlob = async(subUrl, blobName) => {
 
 const getAndSendData = async (url, context) =>{
     let gunzipped = null;
-    const isCompressed =  url.endsWith(gzip); 
+    const isCompressed =  url.endsWith(gzip);                                                                                                                                                                                                                    
     const format = extractFileType(url, isCompressed); 
     const substringUrl = url.substring(0, url.lastIndexOf('/'));
     const fileName = url.substring(lastIndex(url) + 1);
