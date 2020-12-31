@@ -30,7 +30,6 @@
         "BlobStorageAccountName": "[concat('logzioblob', uniqueString(resourceGroup().id))]",
         "LogzioSitesFunctionAppName": "[concat('logzioBlobFunctionApp', uniqueString(resourceGroup().id))]",
         "StorageAccountFunctionLogsName": "[concat('logziologs', uniqueString(resourceGroup().id))]",
-        "storageAccountLogzioFailSafe": "[concat('logziolfs',uniqueString(resourceGroup().id))]",
         "ServerfarmsLogzioSP": "[concat('logzioLAppServicePlan', uniqueString(resourceGroup().id))]",
         "EventHubNamespaceName": "[concat('LogzioEventHubNamespace', uniqueString(resourceGroup().id))]",
         "EventHubBlobName": "logzioeventhub",
@@ -168,31 +167,6 @@
             ]
         },
         {
-            "type": "Microsoft.Storage/storageAccounts",
-            "sku": {
-                "name": "Standard_RAGRS",
-                "tier": "Standard"
-            },
-            "kind": "StorageV2",
-            "name": "[variables('storageAccountLogzioFailSafe')]",
-            "apiVersion": "2019-06-01",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "encryption": {
-                    "services": {
-                        "file": {
-                            "enabled": true
-                        },
-                        "blob": {
-                            "enabled": true
-                        }
-                    },
-                    "keySource": "Microsoft.Storage"
-                }
-            },
-            "dependsOn": []
-        },
-        {
             "type": "Microsoft.Web/serverfarms",
             "sku": {
                 "name": "Y1",
@@ -274,10 +248,6 @@
                         {
                             "name": "AzureEventHubLogsConnectionString",
                             "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/authorizationRules', variables('EventHubNamespaceName'),variables('AuthorizationRulesLogzioSharedAccessKey')), '2017-04-01').primaryConnectionString]"
-                        },
-                        {
-                            "name": "LogsStorageConnectionString",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountLogzioFailSafe'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountLogzioFailSafe')),'2019-06-01').keys[0].value,';EndpointSuffix=core.windows.net')]"
                         },
                         {
                             "name": "EventHubNamespace",
@@ -367,18 +337,6 @@
             "properties": {
                 "publicAccess": "None"
             }
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-            "apiVersion": "2019-04-01",
-            "name": "[concat(variables('storageAccountLogzioFailSafe'), '/default/logziologsfailcontainer')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountLogzioFailSafe'))]"
-            ],
-            "properties": {
-                "publicAccess": "None"
-            }
-        }
-        
+        }        
     ]
 }
