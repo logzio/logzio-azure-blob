@@ -33,7 +33,7 @@ const getParserOptions = () => ({
   host: process.env.LogzioHost,
 });
 
-const sendData = (format, fileName, data, context) =>{
+const sendData = async (format, containerName, fileName, data, context) =>{
   const callBackFunction = getCallBackFunction(context);
   const dataParser = new DataParser({
     internalLogger: context
@@ -47,14 +47,18 @@ const sendData = (format, fileName, data, context) =>{
         internalLogger: context,
         compress: true,
         debug: true,
-        callback: callBackFunction
+        callback: callBackFunction,
+        extraFields : {
+          container: containerName
+      },
     });
   try{
-   const parsedMessagesArray = dataParser.parseEventHubLogMessagesToArray(data, format);
+    const parsedMessagesArray = dataParser.parseEventHubLogMessagesToArray(data, format);
     context.log(`About to send ${parsedMessagesArray.length} logs...`);
-    parsedMessagesArray.forEach(log => {
-        logzioShipper.log(log);
+    parsedMessagesArray.map(async log => {
+      logzioShipper.log(log);
     });
+    await Promise.all(parsedMessagesArray);
   }
   catch(e){
     let errorMessage;
@@ -66,7 +70,7 @@ const sendData = (format, fileName, data, context) =>{
     }
     context.log.error(errorMessage);
     logzioShipper.log(errorMessage);
-  }
+  } 
   logzioShipper.sendAndClose(callBackFunction);
 }
 
@@ -91,8 +95,7 @@ const getFilePath = (urlStr) => {
   return urlStr.substring(indexBeforeContainer + 5);
 }
 
-const getBlob = async(subUrl, blobName) => {
-  const containerName = getFilePath(subUrl);
+const getBlob = async(containerName, blobName) => {
   const blobConnectionString = process.env.BlobConnectionString;
   const containerClient = new ContainerClient(blobConnectionString, containerName);
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
@@ -105,13 +108,14 @@ const getAndSendData = async (url, context) =>{
     const isCompressed =  url.endsWith(gzip);                                                                                                                                                                                                                    
     const format = extractFileType(url, isCompressed); 
     const substringUrl = url.substring(0, url.lastIndexOf('/'));
+    const containerName = getFilePath(substringUrl);
     const fileName = url.substring(lastIndex(url) + 1);
-    const data = await getBlob(substringUrl, fileName);
+    const data = await getBlob(containerName, fileName);
     if(isGzip(data.slice(0, 3))){
       gunzipped = await asyncGunzip(data);
     }
     const blobData = gunzipped || data;
-    sendData(format, fileName, blobData.toString(), context);
+    sendData(format, containerName, fileName, blobData.toString(), context);
 }
 
 const processEventHubMessages = (context, eventHubMessages) => {
