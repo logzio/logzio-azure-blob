@@ -49,7 +49,8 @@ const sendData = (format, containerName, fileName, data, context) =>{
         debug: true,
         callback: callBackFunction,
         extraFields : {
-          container: containerName
+          container: containerName,
+          file: fileName
       },
     });
   try{
@@ -62,10 +63,10 @@ const sendData = (format, containerName, fileName, data, context) =>{
   catch(e){
     let errorMessage;
     if (e instanceof SyntaxError) {
-      errorMessage = "Your data is invalid, please ensure only new lines seperates logs in: " + fileName;
+      errorMessage = "Your data is invalid, please ensure only new lines seperates logs in: " + containerName + "/" + fileName;
     }
     else{
-      errorMessage = "The file " + fileName + " was not sent due to " + e;
+      errorMessage = "The file " + containerName + "/" + fileName + " was not sent due to " + e;
     }
     context.log.error(errorMessage);
     logzioShipper.log(errorMessage);
