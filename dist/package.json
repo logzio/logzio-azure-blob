@@ -10,16 +10,16 @@
   "license": "ISC",
   "dependencies": {
     "@azure/storage-blob": "^12.2.1",
-    "acorn": "^7.1.1",
+    "acorn": "^7.4.1",
     "async-gzip-gunzip": "^1.0.1",
     "azure-storage": "^2.10.4",
-    "dotenv": "^8.2.0",
+    "dotenv": "^8.6.0",
     "is-gzip": "^2.0.0",
-    "jest": "^25.1.0",
+    "jest": "^25.5.4",
     "logzio-nodejs": "^1.0.7",
-    "nock": "^11.7.0",
+    "nock": "^11.9.1",
     "path": "^0.12.7",
-    "request": "^2.88.0"
+    "request": "^2.88.2"
   },
   "devDependencies": {},
   "keywords": [],
