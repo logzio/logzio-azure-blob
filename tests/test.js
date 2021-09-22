@@ -104,7 +104,7 @@ describe("Azure Blob Storage functions - unittest", () => {
         .reply(200, () => {
           done();
         });
-        logHandler.sendData(process.env.Format, stringLog, context);
+        logHandler.sendData(process.env.Format, "test", "test", stringLog, context);
     });
   });
 });
