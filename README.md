@@ -133,15 +133,5 @@ To update your parameters post-deployment, open the **Function App** page in you
 
 
 </div>
-
-## License
-
-All content in this repository is [openly licensed](https://github.com/WhitakerLab/WhitakerLabProjectManagement/blob/master/LICENSE) with a CC BY 4.0, which means you're free to use the materials and remix them so long as you ***credit the source***. 
-
-For example, if you were to use content from this repo in your own project management lab guide, you'd attribute the Whitaker Lab with a sentence like:
-
-> The material in Dr. Mystery's Lab Guide is a partially derived from "[Whitaker Lab Project Management](https://github.com/WhitakerLab/WhitakerLabProjectManagement)" by Dr. Kirstie Whitaker and the Whitaker Lab team, used under CC BY 4.0. Dr. Mystery's Lab Guide is licensed under CC BY 4.0 by [Your name here].
-More on CC BY 4.0 licensing can be found at [Creative Commons](https://creativecommons.org/licenses/by/4.0/).
-
 <!-- tabContainer:end -->
 </div>
